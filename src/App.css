@@ -3,6 +3,7 @@ body, html, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
 }
 
 #root {
@@ -10,7 +11,6 @@ body, html, #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -28,11 +28,69 @@ body, html, #root {
   justify-content: flex-start;
 }
 
+.header-admin-btn {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 100;
+  background: #b31217;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #b3121711;
+  transition: background 0.2s, transform 0.2s;
+}
+.header-admin-btn:hover {
+  background: #7b1fa2;
+  transform: scale(1.05);
+}
+
+.heart-animation {
+  font-size: 3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.main-title {
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  font-size: 2.8rem;
+  color: #b31217;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 8px #fff6, 0 0 2px #b31217;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #7b1fa2;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.welcome-message {
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 24px #b3121722;
+  max-width: 520px;
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   #root, .main-bg {
     padding: 0;
     min-width: 100vw;
   }
+  .header-admin-btn { right: 12px; top: 12px; font-size: 0.95rem; }
 }
 
 @media (max-width: 600px) {
@@ -40,4 +98,8 @@ body, html, #root {
     padding: 0;
     min-width: 100vw;
   }
+  .main-title { font-size: 2rem; }
+  .welcome-message { padding: 1rem; font-size: 1rem; }
+  .heart-animation { font-size: 2.2rem; }
+  .header-admin-btn { font-size: 0.9rem; padding: 0.5rem 0.8rem; }
 } 

@@ -13,6 +13,7 @@ function App() {
   }
   return (
     <div className="main-bg">
+      <button className="header-admin-btn" onClick={() => window.location.href = '/admin'}>Yönetici Girişi</button>
       <ParallaxBanner />
       <div className="heart-animation">❤️</div>
       <h1 className="main-title">İyiki Sen Sevgilim</h1>
