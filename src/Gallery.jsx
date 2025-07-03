@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Gallery.css';
 
-const galleryItems = [
+const defaultGalleryItems = [
   {
     type: 'image',
     src: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80',
@@ -25,6 +25,15 @@ const galleryItems = [
 ];
 
 function Gallery() {
+  const [galleryItems, setGalleryItems] = useState(defaultGalleryItems);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('galleryData');
+    if (stored) {
+      setGalleryItems(JSON.parse(stored));
+    }
+  }, []);
+
   return (
     <div className="gallery-container">
       <h2 className="gallery-title">Fotoğraf & Video Galerisi</h2>

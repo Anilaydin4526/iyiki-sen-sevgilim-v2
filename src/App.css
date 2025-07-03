@@ -1,97 +1,43 @@
+body, html, #root {
+  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
 .main-bg {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+  width: 100vw;
+  margin: 0;
+  padding: 0 0 3rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 1rem;
+  justify-content: flex-start;
 }
 
-.heart-animation {
-  font-size: 4rem;
-  animation: heartbeat 1.2s infinite;
-  margin-bottom: 1.5rem;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  10%, 30% { transform: scale(1.2); }
-  20%, 40% { transform: scale(0.95); }
-  50% { transform: scale(1.1); }
-  60%, 80% { transform: scale(1); }
-}
-
-.main-title {
-  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-  font-size: 2.8rem;
-  color: #b31217;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px #fff6, 0 0 2px #b31217;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  color: #7b1fa2;
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-
-.welcome-message {
-  background: rgba(255,255,255,0.85);
-  border-radius: 18px;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 24px #b3121722;
-  max-width: 420px;
-  font-size: 1.1rem;
-  color: #333;
+@media (max-width: 900px) {
+  #root, .main-bg {
+    padding: 0;
+    min-width: 100vw;
+  }
 }
 
 @media (max-width: 600px) {
-  .main-title { font-size: 2rem; }
-  .welcome-message { padding: 1rem; font-size: 1rem; }
-  .heart-animation { font-size: 2.5rem; }
-}
+  #root, .main-bg {
+    padding: 0;
+    min-width: 100vw;
+  }
+} 

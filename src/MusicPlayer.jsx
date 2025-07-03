@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './MusicPlayer.css';
 
-const playlist = [
+const defaultPlaylist = [
   {
     title: 'Sonsuza Dek',
     artist: 'Aşkımızın Şarkısı',
@@ -15,8 +15,16 @@ const playlist = [
 ];
 
 function MusicPlayer() {
+  const [playlist, setPlaylist] = useState(defaultPlaylist);
   const [current, setCurrent] = useState(0);
   const audioRef = useRef(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('musicData');
+    if (stored) {
+      setPlaylist(JSON.parse(stored));
+    }
+  }, []);
 
   const playNext = () => {
     setCurrent((prev) => (prev + 1) % playlist.length);
@@ -24,6 +32,8 @@ function MusicPlayer() {
   const playPrev = () => {
     setCurrent((prev) => (prev - 1 + playlist.length) % playlist.length);
   };
+
+  if (playlist.length === 0) return null;
 
   return (
     <div className="music-player-container">

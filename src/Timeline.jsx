@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Timeline.css';
 
-const timelineData = [
+const defaultTimelineData = [
   {
     date: '2022-02-14',
     title: 'İlk Buluşmamız',
@@ -23,6 +23,15 @@ const timelineData = [
 ];
 
 function Timeline() {
+  const [timelineData, setTimelineData] = useState(defaultTimelineData);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('timelineData');
+    if (stored) {
+      setTimelineData(JSON.parse(stored));
+    }
+  }, []);
+
   return (
     <div className="timeline-container">
       <h2 className="timeline-title">Zaman Tünelimiz</h2>
@@ -42,4 +51,4 @@ function Timeline() {
   );
 }
 
-export default Timeline;
+export default Timeline; 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoveQuiz.css';
 
-const questions = [
+const defaultQuestions = [
   {
     question: 'İlk buluşmamız hangi gündü?',
     options: ['14 Şubat', '1 Mayıs', '1 Ocak', '23 Nisan'],
@@ -20,15 +20,25 @@ const questions = [
 ];
 
 function LoveQuiz() {
+  const [questions, setQuestions] = useState(defaultQuestions);
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('quizData');
+    if (stored) {
+      setQuestions(JSON.parse(stored));
+    }
+  }, []);
 
   const handleOption = (idx) => {
     if (idx === questions[step].answer) setScore(score + 1);
     if (step + 1 < questions.length) setStep(step + 1);
     else setShowResult(true);
   };
+
+  if (questions.length === 0) return null;
 
   return (
     <div className="quiz-container">
