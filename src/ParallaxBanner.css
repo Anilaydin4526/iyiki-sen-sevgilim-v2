@@ -1,0 +1,44 @@
+.parallax-banner {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 320px;
+  background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.parallax-content {
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  padding: 2rem 3rem;
+  text-align: center;
+  box-shadow: 0 4px 24px #b3121722;
+}
+.parallax-content h1 {
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  color: #b31217;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.parallax-content p {
+  color: #7b1fa2;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .parallax-banner { height: 180px; }
+  .parallax-content { padding: 1rem 0.5rem; }
+  .parallax-content h1 { font-size: 1.3rem; }
+  .parallax-content p { font-size: 0.9rem; }
+} 

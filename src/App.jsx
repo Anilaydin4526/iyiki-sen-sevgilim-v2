@@ -1,0 +1,30 @@
+import './App.css'
+import Timeline from './Timeline';
+import Gallery from './Gallery';
+import MusicPlayer from './MusicPlayer';
+import SurpriseMessage from './SurpriseMessage';
+import LoveQuiz from './LoveQuiz';
+import ParallaxBanner from './ParallaxBanner';
+import LoveChatbot from './LoveChatbot';
+
+function App() {
+  return (
+    <div className="main-bg">
+      <ParallaxBanner />
+      <div className="heart-animation">❤️</div>
+      <h1 className="main-title">İyiki Sen Sevgilim</h1>
+      <p className="subtitle">Birlikte geçirdiğimiz her an, bu sitede sonsuza dek yaşayacak...</p>
+      <div className="welcome-message">
+        <p>Hoşgeldin! Bu site, aşkımızın hikayesini, anılarımızı ve sürprizleriyle dolu bir yolculuğu anlatıyor. Her tıklamada yeni bir sürpriz, her sayfada yeni bir anı seni bekliyor. Hazır mısın?</p>
+      </div>
+      <Timeline />
+      <Gallery />
+      <MusicPlayer />
+      <SurpriseMessage />
+      <LoveQuiz />
+      <LoveChatbot />
+    </div>
+  )
+}
+
+export default App
