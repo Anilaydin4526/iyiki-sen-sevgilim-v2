@@ -1,28 +1,39 @@
 .admin-login-container, .admin-panel-container {
   margin: 4rem auto 2rem auto;
-  max-width: 400px;
+  max-width: 520px;
+  min-width: 320px;
+  width: 90vw;
   background: rgba(255,255,255,0.97);
-  border-radius: 18px;
-  box-shadow: 0 4px 24px #b3121722;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px #b3121722;
   padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 .admin-login-container h2, .admin-panel-container h2 {
   color: #b31217;
   font-family: 'Segoe Script', 'Comic Sans MS', cursive;
   margin-bottom: 1.5rem;
+  text-align: center;
 }
-.admin-login-container input {
+.admin-panel-container h3 {
+  color: #7b1fa2;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  margin: 2.2rem 0 1rem 0;
+  text-align: center;
+}
+.admin-login-container input, .admin-panel-container input, .admin-panel-container select {
   width: 100%;
   padding: 0.7rem 1rem;
   border-radius: 8px;
   border: 1px solid #b3121722;
   font-size: 1rem;
   margin-bottom: 1rem;
+  box-sizing: border-box;
 }
-.admin-login-container button {
+.admin-login-container button, .admin-panel-container button {
   background: #b31217;
   color: #fff;
   border: none;
@@ -31,16 +42,54 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  margin-bottom: 1rem;
 }
-.admin-login-container button:hover {
+.admin-login-container button:hover, .admin-panel-container button:hover {
   background: #7b1fa2;
 }
 .admin-error {
   color: #b31217;
   margin-top: 1rem;
   font-weight: bold;
+  text-align: center;
 }
-@media (max-width: 600px) {
-  .admin-login-container, .admin-panel-container { padding: 1.2rem 0.5rem; }
-  .admin-login-container h2, .admin-panel-container h2 { font-size: 1.1rem; }
+.admin-timeline-list, .admin-gallery-list, .admin-music-list, .admin-quiz-list {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+.admin-timeline-item, .admin-gallery-item, .admin-music-item, .admin-quiz-item {
+  background: #fff6fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #b3121711;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.admin-timeline-item img, .admin-gallery-item img, .admin-gallery-item video {
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  max-width: 120px;
+  max-height: 80px;
+}
+.admin-timeline-add, .admin-gallery-add, .admin-music-add, .admin-quiz-add {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.admin-panel-container input[type="file"] {
+  padding: 0.2rem 0;
+}
+@media (max-width: 700px) {
+  .admin-login-container, .admin-panel-container {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+  .admin-timeline-item img, .admin-gallery-item img, .admin-gallery-item video {
+    max-width: 80px;
+    max-height: 50px;
+  }
 } 
