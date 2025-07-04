@@ -7,9 +7,9 @@ import MusicPlayer from "./MusicPlayer";
 import LoveQuiz from "./LoveQuiz";
 import LoveChatbot from "./LoveChatbot";
 import "./App.css";
-import { ContentProvider, useContent } from "./utils/ContentContext";
+import { ContentProvider, useContent } from "./utils/ContentContext.jsx";
 
-function MainContent({ admin }) {
+function MainContent({ admin, setAdmin }) {
   const { content, loading, error } = useContent();
 
   if (loading) return <div>Yükleniyor...</div>;
@@ -20,7 +20,7 @@ function MainContent({ admin }) {
     <div className="main-bg">
       <button
         className="header-admin-btn"
-        onClick={() => window.location.reload()}
+        onClick={() => setAdmin(!admin)}
       >
         {admin ? "Siteye Dön" : "Yönetici Girişi"}
       </button>
@@ -38,7 +38,19 @@ function MainContent({ admin }) {
       </div>
       <ParallaxBanner bannerText={content.bannerText} />
       {admin ? (
-        <AdminPanel />
+        <div className="admin-view">
+          <AdminPanel />
+          <div className="preview-section">
+            <h3>Önizleme - Ana Sayfa Görünümü</h3>
+            <div className="preview-content">
+              <Timeline />
+              <Gallery />
+              <MusicPlayer />
+              <LoveQuiz />
+              <LoveChatbot />
+            </div>
+          </div>
+        </div>
       ) : (
         <>
           <Timeline />
@@ -56,7 +68,7 @@ function App() {
   const [admin, setAdmin] = useState(false);
   return (
     <ContentProvider>
-      <MainContent admin={admin} />
+      <MainContent admin={admin} setAdmin={setAdmin} />
     </ContentProvider>
   );
 }

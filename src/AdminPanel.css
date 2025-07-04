@@ -82,4 +82,435 @@
   .admin-item {
     padding: 0.5rem 0.5rem;
   }
+}
+
+.admin-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.admin-panel h2 {
+  text-align: center;
+  color: #e91e63;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-sections {
+  display: grid;
+  gap: 30px;
+}
+
+.admin-section {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(233, 30, 99, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.admin-section h3 {
+  color: #e91e63;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  border-bottom: 2px solid #e91e63;
+  padding-bottom: 10px;
+}
+
+/* Editable Text Styles */
+.editable-text {
+  position: relative;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.editable-text:hover {
+  background: rgba(233, 30, 99, 0.1);
+  transform: translateY(-2px);
+}
+
+.editable-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-label {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: #e91e63;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.editable-text:hover .edit-label {
+  opacity: 1;
+}
+
+.edit-input {
+  border: 2px solid #e91e63;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1em;
+  width: 100%;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.edit-input:focus {
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
+}
+
+/* Editable Image Styles */
+.editable-image {
+  position: relative;
+  display: inline-block;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.editable-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.editable-image img {
+  max-width: 200px;
+  height: auto;
+  display: block;
+}
+
+.image-edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+}
+
+/* Button Styles */
+.upload-btn, .add-btn {
+  background: linear-gradient(135deg, #e91e63, #f06292);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+.upload-btn:hover, .add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #f44336, #ef5350);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* Media Grid */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.media-item {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.media-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.media-item img, .media-item video {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.media-item .delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  font-size: 0.8em;
+}
+
+/* Music Section */
+.music-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: end;
+}
+
+.music-input input {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.music-input input:focus {
+  border-color: #e91e63;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.music-list {
+  display: grid;
+  gap: 15px;
+}
+
+.music-item {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.music-item span {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.music-item audio {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.music-item .delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Timeline Section */
+.timeline-admin-list {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.timeline-admin-item {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  border-left: 4px solid #e91e63;
+}
+
+.timeline-admin-item img, .timeline-admin-item video {
+  max-width: 120px;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.timeline-add {
+  background: rgba(233, 30, 99, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px dashed #e91e63;
+  display: grid;
+  gap: 15px;
+}
+
+.timeline-add input {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.timeline-add input:focus {
+  border-color: #e91e63;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+/* Admin Login */
+.admin-login {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.admin-login h2 {
+  color: #e91e63;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.admin-login input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.admin-login input:focus {
+  border-color: #e91e63;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.admin-login button {
+  background: linear-gradient(135deg, #e91e63, #f06292);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+.admin-login button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+
+/* Admin View Layout */
+.admin-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.preview-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.preview-section h3 {
+  text-align: center;
+  color: #e91e63;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.preview-content {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-view {
+    grid-template-columns: 1fr;
+  }
+  
+  .music-input {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-panel {
+    padding: 15px;
+  }
+  
+  .admin-section {
+    padding: 15px;
+  }
+}
+
+/* Upload Section */
+.upload-section {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(233, 30, 99, 0.05);
+  border-radius: 12px;
+  border: 2px dashed #e91e63;
+}
+
+/* Loading States */
+.uploading {
+  color: #e91e63;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Editable Section */
+.editable-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(233, 30, 99, 0.2);
+}
+
+.editable-section label {
+  display: block;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
 } 
