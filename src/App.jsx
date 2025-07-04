@@ -30,7 +30,7 @@ function App() {
       </div>
       <div className="welcome-message">
         <center>
-        <p>
+       <p className="main-title">
   Hoş geldin Gülüm…<br /><br />
   Bazen karşımda minik bir kız çocuğu varmış gibi seviyorum seni…<br />
   Küçücük bir kalbin varmış gibi sarıyorum seni…<br />
@@ -47,6 +47,7 @@ function App() {
   Ama bu sayfa, her gün yeniden yazılan bir “seni seviyorum” cümlesi…<br /><br />
   Senin için, sadece senin için...
 </p>
+
 
         </center>
       </div>
