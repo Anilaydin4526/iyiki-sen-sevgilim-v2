@@ -1,66 +1,51 @@
 .chatbot-container {
-  margin: 3rem auto 2rem auto;
+  width: 100%;
   max-width: 500px;
-  background: rgba(255,255,255,0.92);
+  margin: 0 auto 2.5rem auto;
+  background: rgba(255,255,255,0.95);
   border-radius: 18px;
   box-shadow: 0 4px 24px #b3121722;
   padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
 }
-
 .chatbot-title {
   color: #b31217;
   font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-  font-size: 1.5rem;
-  margin-bottom: 1.2rem;
-}
-
-.chatbot-messages {
-  width: 100%;
-  min-height: 120px;
-  max-height: 220px;
-  overflow-y: auto;
-  background: #fff6fa;
-  border-radius: 10px;
-  padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px #b3121711;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
-
+.chatbot-messages {
+  min-height: 60px;
+  margin-bottom: 1rem;
+  text-align: left;
+}
 .chatbot-msg {
+  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 12px;
-  max-width: 80%;
-  font-size: 1rem;
-  word-break: break-word;
+  border-radius: 8px;
+  background: #fff6fa;
+  box-shadow: 0 2px 8px #b3121711;
+  display: inline-block;
 }
 .chatbot-msg.user {
-  align-self: flex-end;
-  background: linear-gradient(90deg, #b31217 0%, #7b1fa2 100%);
+  background: #ee9ca7;
   color: #fff;
+  margin-left: auto;
 }
 .chatbot-msg.bot {
-  align-self: flex-start;
-  background: #fff;
-  color: #b31217;
-  border: 1px solid #b3121722;
+  background: #b31217;
+  color: #fff;
+  margin-right: auto;
 }
-
 .chatbot-input-row {
   display: flex;
-  width: 100%;
   gap: 0.5rem;
+  justify-content: center;
 }
 .chatbot-input-row input {
   flex: 1;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   border: 1px solid #b3121722;
-  padding: 0.5rem 1rem;
   font-size: 1rem;
 }
 .chatbot-input-row button {
@@ -68,17 +53,11 @@
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 0.5rem 1.2rem;
+  padding: 0.4rem 1.2rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
 }
 .chatbot-input-row button:hover {
   background: #7b1fa2;
-}
-
-@media (max-width: 600px) {
-  .chatbot-title { font-size: 1.1rem; }
-  .chatbot-container { padding: 1rem 0.3rem; }
-  .chatbot-msg { font-size: 0.95rem; }
 } 

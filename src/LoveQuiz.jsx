@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './LoveQuiz.css';
 
 const defaultQuestions = [
@@ -6,16 +6,6 @@ const defaultQuestions = [
     question: 'İlk buluşmamız hangi gündü?',
     options: ['14 Şubat', '1 Mayıs', '1 Ocak', '23 Nisan'],
     answer: 0,
-  },
-  {
-    question: 'Birlikte en çok ne yapmayı severiz?',
-    options: ['Film izlemek', 'Yürüyüş yapmak', 'Kahve içmek', 'Hepsi!'],
-    answer: 3,
-  },
-  {
-    question: 'En sevdiğimiz şarkı türü?',
-    options: ['Rock', 'Pop', 'Romantik', 'Rap'],
-    answer: 2,
   },
 ];
 
@@ -27,9 +17,7 @@ function LoveQuiz() {
 
   useEffect(() => {
     const stored = localStorage.getItem('quizData');
-    if (stored) {
-      setQuestions(JSON.parse(stored));
-    }
+    if (stored) setQuestions(JSON.parse(stored));
   }, []);
 
   const handleOption = (idx) => {
@@ -55,7 +43,7 @@ function LoveQuiz() {
       ) : (
         <div className="quiz-result">
           <h3>Sonuç: {score} / {questions.length}</h3>
-          <p>{score === questions.length ? 'Mükemmel! Beni çok iyi tanıyorsun 💖' : 'Yine de seni çok seviyorum! 💌'}</p>
+          <p>{score === questions.length ? 'Mükemmel! Beni çok iyi tanıyorsun 💖' : 'Yine de seni çok seviyorum! 💋'}</p>
         </div>
       )}
     </div>

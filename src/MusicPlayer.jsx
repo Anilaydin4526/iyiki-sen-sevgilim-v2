@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './MusicPlayer.css';
 
 const defaultPlaylist = [
@@ -6,11 +6,6 @@ const defaultPlaylist = [
     title: 'Sonsuza Dek',
     artist: 'Aşkımızın Şarkısı',
     src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  },
-  {
-    title: 'Birlikte Güzel',
-    artist: 'Romantik Anlar',
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
   },
 ];
 
@@ -21,17 +16,11 @@ function MusicPlayer() {
 
   useEffect(() => {
     const stored = localStorage.getItem('musicData');
-    if (stored) {
-      setPlaylist(JSON.parse(stored));
-    }
+    if (stored) setPlaylist(JSON.parse(stored));
   }, []);
 
-  const playNext = () => {
-    setCurrent((prev) => (prev + 1) % playlist.length);
-  };
-  const playPrev = () => {
-    setCurrent((prev) => (prev - 1 + playlist.length) % playlist.length);
-  };
+  const playNext = () => setCurrent((prev) => (prev + 1) % playlist.length);
+  const playPrev = () => setCurrent((prev) => (prev - 1 + playlist.length) % playlist.length);
 
   if (playlist.length === 0) return null;
 
