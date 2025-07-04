@@ -7,7 +7,7 @@ import MusicPlayer from "./MusicPlayer";
 import LoveQuiz from "./LoveQuiz";
 import LoveChatbot from "./LoveChatbot";
 import "./App.css";
-import { ContentProvider, useContent } from "./utils/ContentContext";
+import { ContentProvider, useContent } from "./utils/ContentContext.jsx";
 
 function MainContent({ admin }) {
   const { content, loading, error } = useContent();
