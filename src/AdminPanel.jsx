@@ -1,221 +1,207 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './AdminPanel.css';
+import { uploadToCloudinary } from "./utils/uploadToCloudinary";
+import { useContent } from "./utils/ContentContext";
 
 const password = 'iyikisen2024';
 
+function EditableText({ value, onSave, label }) {
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(value);
+  return (
+    <div className="editable-text" onMouseEnter={() => setEditing(true)} onMouseLeave={() => setEditing(false)}>
+      {editing ? (
+        <input
+          value={text}
+          onChange={e => setText(e.target.value)}
+          onBlur={() => { setEditing(false); onSave(text); }}
+          onKeyDown={e => { if (e.key === 'Enter') { setEditing(false); onSave(text); } }}
+          autoFocus
+        />
+      ) : (
+        <span>{text} <span className="edit-label">✏️ {label}</span></span>
+      )}
+    </div>
+  );
+}
+
 function AdminPanel() {
+  const { content, updateContent, loading } = useContent();
   const [step, setStep] = useState('login');
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
-  // Timeline
-  const [timeline, setTimeline] = useState([]);
-  const [newTimeline, setNewTimeline] = useState({ date: '', title: '', description: '', image: '' });
-  // Gallery
-  const [gallery, setGallery] = useState([]);
-  const [newGallery, setNewGallery] = useState({ type: 'image', src: '', alt: '' });
-  // Music
-  const [music, setMusic] = useState([]);
-  const [newMusic, setNewMusic] = useState({ title: '', artist: '', src: '' });
-  // Quiz
-  const [quiz, setQuiz] = useState([]);
-  const [newQuiz, setNewQuiz] = useState({ question: '', options: ['', '', '', ''], answer: 0 });
+  const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (step === 'panel') {
-      setTimeline(JSON.parse(localStorage.getItem('timelineData') || '[]'));
-      setGallery(JSON.parse(localStorage.getItem('galleryData') || '[]'));
-      setMusic(JSON.parse(localStorage.getItem('musicData') || '[]'));
-      setQuiz(JSON.parse(localStorage.getItem('quizData') || '[]'));
-    }
-  }, [step]);
-
-  // Timeline
-  const handleTimelineAdd = () => {
-    if (!newTimeline.date || !newTimeline.title) return;
-    const updated = [...timeline, newTimeline];
-    setTimeline(updated);
-    localStorage.setItem('timelineData', JSON.stringify(updated));
-    setNewTimeline({ date: '', title: '', description: '', image: '' });
-  };
-  const handleTimelineDelete = idx => {
-    const updated = timeline.filter((_, i) => i !== idx);
-    setTimeline(updated);
-    localStorage.setItem('timelineData', JSON.stringify(updated));
-  };
-  const handleTimelineEdit = (idx, key, value) => {
-    const updated = timeline.map((item, i) => i === idx ? { ...item, [key]: value } : item);
-    setTimeline(updated);
-    localStorage.setItem('timelineData', JSON.stringify(updated));
-  };
-  // Gallery
-  const handleGalleryAdd = () => {
-    if (!newGallery.src || !newGallery.alt) return;
-    const updated = [...gallery, newGallery];
-    setGallery(updated);
-    localStorage.setItem('galleryData', JSON.stringify(updated));
-    setNewGallery({ type: 'image', src: '', alt: '' });
-  };
-  const handleGalleryDelete = idx => {
-    const updated = gallery.filter((_, i) => i !== idx);
-    setGallery(updated);
-    localStorage.setItem('galleryData', JSON.stringify(updated));
-  };
-  const handleGalleryEdit = (idx, key, value) => {
-    const updated = gallery.map((item, i) => i === idx ? { ...item, [key]: value } : item);
-    setGallery(updated);
-    localStorage.setItem('galleryData', JSON.stringify(updated));
-  };
-  // Music
-  const handleMusicAdd = () => {
-    if (!newMusic.src || !newMusic.title) return;
-    const updated = [...music, newMusic];
-    setMusic(updated);
-    localStorage.setItem('musicData', JSON.stringify(updated));
-    setNewMusic({ title: '', artist: '', src: '' });
-  };
-  const handleMusicDelete = idx => {
-    const updated = music.filter((_, i) => i !== idx);
-    setMusic(updated);
-    localStorage.setItem('musicData', JSON.stringify(updated));
-  };
-  const handleMusicEdit = (idx, key, value) => {
-    const updated = music.map((item, i) => i === idx ? { ...item, [key]: value } : item);
-    setMusic(updated);
-    localStorage.setItem('musicData', JSON.stringify(updated));
-  };
-  // Quiz
-  const handleQuizAdd = () => {
-    if (!newQuiz.question || newQuiz.options.some(opt => !opt)) return;
-    const updated = [...quiz, newQuiz];
-    setQuiz(updated);
-    localStorage.setItem('quizData', JSON.stringify(updated));
-    setNewQuiz({ question: '', options: ['', '', '', ''], answer: 0 });
-  };
-  const handleQuizDelete = idx => {
-    const updated = quiz.filter((_, i) => i !== idx);
-    setQuiz(updated);
-    localStorage.setItem('quizData', JSON.stringify(updated));
-  };
-  const handleQuizEdit = (idx, key, value) => {
-    const updated = quiz.map((item, i) => i === idx ? { ...item, [key]: value } : item);
-    setQuiz(updated);
-    localStorage.setItem('quizData', JSON.stringify(updated));
-  };
+  // Zaman tüneli ekleme için state
+  const [timelineInput, setTimelineInput] = useState({ date: '', title: '', description: '', media: null });
 
   if (step === 'login') {
     return (
-      <div className="admin-login-container">
-        <h2>Yönetici Girişi</h2>
+      <div className="admin-login">
+        <h2>Admin Paneli Girişi</h2>
         <input
           type="password"
           placeholder="Şifre"
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && (input === password ? setStep('panel') : setError('Şifre yanlış!'))}
         />
-        <button onClick={() => input === password ? setStep('panel') : setError('Şifre yanlış!')}>Giriş Yap</button>
-        {error && <div className="admin-error">{error}</div>}
+        <button onClick={() => {
+          if (input === password) setStep('panel');
+          else setError('Hatalı şifre!');
+        }}>Giriş</button>
+        {error && <div style={{ color: 'red' }}>{error}</div>}
       </div>
     );
   }
 
+  if (!content) return null;
+
+  // Başlık, açıklama, bannerText düzenleme
+  const handleTextSave = (field, value) => {
+    updateContent({ [field]: value });
+  };
+
+  // Galeriye yeni medya ekleme
+  const handleMediaUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    let resourceType = "auto";
+    if (file.type.startsWith("image/")) resourceType = "image";
+    else if (file.type.startsWith("video/")) resourceType = "video";
+    else if (file.type.startsWith("audio/")) resourceType = "video";
+    const url = await uploadToCloudinary(file, resourceType);
+    const newItem = {
+      type: file.type.startsWith("image/") ? "image" : file.type.startsWith("video/") ? "video" : "audio",
+      src: url,
+      alt: file.name
+    };
+    updateContent({ gallery: [...(content.gallery || []), newItem] });
+    setUploading(false);
+  };
+
+  // Galeriden medya silme
+  const handleDeleteMedia = idx => {
+    const newGallery = content.gallery.filter((_, i) => i !== idx);
+    updateContent({ gallery: newGallery });
+  };
+
+  // Müzik ekleme
+  const [musicInput, setMusicInput] = useState({ title: '', artist: '', src: '' });
+  const handleAddMusic = () => {
+    if (!musicInput.title || !musicInput.artist || !musicInput.src) return;
+    updateContent({ music: [...(content.music || []), musicInput] });
+    setMusicInput({ title: '', artist: '', src: '' });
+  };
+  // Müzik silme
+  const handleDeleteMusic = idx => {
+    const newMusic = content.music.filter((_, i) => i !== idx);
+    updateContent({ music: newMusic });
+  };
+
+  // Zaman tüneline yeni olay ekle
+  const handleAddTimeline = () => {
+    if (!timelineInput.date || !timelineInput.title) return;
+    updateContent({ timeline: [...(content.timeline || []), timelineInput] });
+    setTimelineInput({ date: '', title: '', description: '', media: null });
+  };
+  // Zaman tünelinden olay sil
+  const handleDeleteTimeline = idx => {
+    const newTimeline = content.timeline.filter((_, i) => i !== idx);
+    updateContent({ timeline: newTimeline });
+  };
+  // Zaman tüneli medya yükleme
+  const handleTimelineMediaUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    let resourceType = "auto";
+    if (file.type.startsWith("image/")) resourceType = "image";
+    else if (file.type.startsWith("video/")) resourceType = "video";
+    const url = await uploadToCloudinary(file, resourceType);
+    setTimelineInput(input => ({ ...input, media: { type: resourceType, src: url, alt: file.name } }));
+    setUploading(false);
+  };
+
   return (
-    <div className="admin-panel-container">
-      <h2>Yönetici Paneli</h2>
-      {/* Timeline */}
+    <div className="admin-panel">
+      <h2>Admin Paneli</h2>
+      <div className="editable-section">
+        <label>Başlık: </label>
+        <EditableText value={content.title} onSave={v => handleTextSave('title', v)} label="Düzenle" />
+      </div>
+      <div className="editable-section">
+        <label>Açıklama: </label>
+        <EditableText value={content.description} onSave={v => handleTextSave('description', v)} label="Düzenle" />
+      </div>
+      <div className="editable-section">
+        <label>Banner Yazısı: </label>
+        <EditableText value={content.bannerText} onSave={v => handleTextSave('bannerText', v)} label="Düzenle" />
+      </div>
+      <section>
+        <h3>Galeri (Fotoğraf & Video)</h3>
+        <input type="file" accept="image/*,video/*" onChange={handleMediaUpload} />
+        {uploading && <p>Yükleniyor...</p>}
+        <div className="media-preview">
+          {(content.gallery || []).map((media, i) => (
+            <div key={i} style={{ margin: 10, position: 'relative' }}>
+              {media.type === "image" && (
+                <img src={media.src} alt={media.alt} style={{ maxWidth: 200 }} />
+              )}
+              {media.type === "video" && (
+                <video src={media.src} controls style={{ maxWidth: 200 }} />
+              )}
+              <button className="delete-btn" onClick={() => handleDeleteMedia(i)}>Sil</button>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section>
+        <h3>Müzik Listesi</h3>
+        <input placeholder="Şarkı adı" value={musicInput.title} onChange={e => setMusicInput({ ...musicInput, title: e.target.value })} />
+        <input placeholder="Sanatçı" value={musicInput.artist} onChange={e => setMusicInput({ ...musicInput, artist: e.target.value })} />
+        <input placeholder="MP3 URL" value={musicInput.src} onChange={e => setMusicInput({ ...musicInput, src: e.target.value })} />
+        <button onClick={handleAddMusic}>Ekle</button>
+        <div className="music-list">
+          {(content.music || []).map((m, i) => (
+            <div key={i} style={{ margin: 10, position: 'relative' }}>
+              <span>{m.title} - {m.artist}</span>
+              <audio src={m.src} controls style={{ display: 'block' }} />
+              <button className="delete-btn" onClick={() => handleDeleteMusic(i)}>Sil</button>
+            </div>
+          ))}
+        </div>
+      </section>
       <section>
         <h3>Zaman Tüneli</h3>
-        <div className="admin-list">
-          {timeline.map((item, idx) => (
-            <div className="admin-item" key={idx}>
-              <input value={item.date} onChange={e => handleTimelineEdit(idx, 'date', e.target.value)} />
-              <input value={item.title} onChange={e => handleTimelineEdit(idx, 'title', e.target.value)} />
-              <input value={item.description} onChange={e => handleTimelineEdit(idx, 'description', e.target.value)} />
-              <input value={item.image} onChange={e => handleTimelineEdit(idx, 'image', e.target.value)} placeholder="Resim URL" />
-              <button onClick={() => handleTimelineDelete(idx)}>Sil</button>
+        <div className="timeline-admin-list">
+          {(content.timeline || []).map((item, idx) => (
+            <div key={idx} className="timeline-admin-item">
+              <div><b>{item.date}</b> - {item.title}</div>
+              <div>{item.description}</div>
+              {item.media && item.media.type === 'image' && (
+                <img src={item.media.src} alt={item.media.alt} style={{ maxWidth: 120 }} />
+              )}
+              {item.media && item.media.type === 'video' && (
+                <video src={item.media.src} controls style={{ maxWidth: 120 }} />
+              )}
+              <button className="delete-btn" onClick={() => handleDeleteTimeline(idx)}>Sil</button>
             </div>
           ))}
         </div>
-        <div className="admin-add">
-          <input type="date" value={newTimeline.date} onChange={e => setNewTimeline({ ...newTimeline, date: e.target.value })} />
-          <input type="text" placeholder="Başlık" value={newTimeline.title} onChange={e => setNewTimeline({ ...newTimeline, title: e.target.value })} />
-          <input type="text" placeholder="Açıklama" value={newTimeline.description} onChange={e => setNewTimeline({ ...newTimeline, description: e.target.value })} />
-          <input type="text" placeholder="Resim URL" value={newTimeline.image} onChange={e => setNewTimeline({ ...newTimeline, image: e.target.value })} />
-          <button onClick={handleTimelineAdd}>Ekle</button>
-        </div>
-      </section>
-      {/* Gallery */}
-      <section>
-        <h3>Galeri</h3>
-        <div className="admin-list">
-          {gallery.map((item, idx) => (
-            <div className="admin-item" key={idx}>
-              <select value={item.type} onChange={e => handleGalleryEdit(idx, 'type', e.target.value)}>
-                <option value="image">Fotoğraf</option>
-                <option value="video">Video</option>
-              </select>
-              <input value={item.src} onChange={e => handleGalleryEdit(idx, 'src', e.target.value)} placeholder="URL" />
-              <input value={item.alt} onChange={e => handleGalleryEdit(idx, 'alt', e.target.value)} placeholder="Açıklama" />
-              <button onClick={() => handleGalleryDelete(idx)}>Sil</button>
-            </div>
-          ))}
-        </div>
-        <div className="admin-add">
-          <select value={newGallery.type} onChange={e => setNewGallery({ ...newGallery, type: e.target.value })}>
-            <option value="image">Fotoğraf</option>
-            <option value="video">Video</option>
-          </select>
-          <input type="text" placeholder="URL" value={newGallery.src} onChange={e => setNewGallery({ ...newGallery, src: e.target.value })} />
-          <input type="text" placeholder="Açıklama" value={newGallery.alt} onChange={e => setNewGallery({ ...newGallery, alt: e.target.value })} />
-          <button onClick={handleGalleryAdd}>Ekle</button>
-        </div>
-      </section>
-      {/* Music */}
-      <section>
-        <h3>Müzik</h3>
-        <div className="admin-list">
-          {music.map((item, idx) => (
-            <div className="admin-item" key={idx}>
-              <input value={item.title} onChange={e => handleMusicEdit(idx, 'title', e.target.value)} placeholder="Şarkı Adı" />
-              <input value={item.artist} onChange={e => handleMusicEdit(idx, 'artist', e.target.value)} placeholder="Sanatçı" />
-              <input value={item.src} onChange={e => handleMusicEdit(idx, 'src', e.target.value)} placeholder="URL" />
-              <button onClick={() => handleMusicDelete(idx)}>Sil</button>
-            </div>
-          ))}
-        </div>
-        <div className="admin-add">
-          <input type="text" placeholder="Şarkı Adı" value={newMusic.title} onChange={e => setNewMusic({ ...newMusic, title: e.target.value })} />
-          <input type="text" placeholder="Sanatçı" value={newMusic.artist} onChange={e => setNewMusic({ ...newMusic, artist: e.target.value })} />
-          <input type="text" placeholder="URL" value={newMusic.src} onChange={e => setNewMusic({ ...newMusic, src: e.target.value })} />
-          <button onClick={handleMusicAdd}>Ekle</button>
-        </div>
-      </section>
-      {/* Quiz */}
-      <section>
-        <h3>Quiz</h3>
-        <div className="admin-list">
-          {quiz.map((item, idx) => (
-            <div className="admin-item" key={idx}>
-              <input value={item.question} onChange={e => handleQuizEdit(idx, 'question', e.target.value)} placeholder="Soru" />
-              {item.options.map((opt, i) => (
-                <input key={i} value={opt} onChange={e => handleQuizEdit(idx, 'options', item.options.map((o, j) => j === i ? e.target.value : o))} placeholder={`Seçenek ${i+1}`} />
-              ))}
-              <select value={item.answer} onChange={e => handleQuizEdit(idx, 'answer', Number(e.target.value))}>
-                {item.options.map((_, i) => <option key={i} value={i}>{`Doğru: Seçenek ${i+1}`}</option>)}
-              </select>
-              <button onClick={() => handleQuizDelete(idx)}>Sil</button>
-            </div>
-          ))}
-        </div>
-        <div className="admin-add">
-          <input type="text" placeholder="Soru" value={newQuiz.question} onChange={e => setNewQuiz({ ...newQuiz, question: e.target.value })} />
-          {newQuiz.options.map((opt, i) => (
-            <input key={i} type="text" placeholder={`Seçenek ${i+1}`} value={opt} onChange={e => setNewQuiz({ ...newQuiz, options: newQuiz.options.map((o, j) => j === i ? e.target.value : o) })} />
-          ))}
-          <select value={newQuiz.answer} onChange={e => setNewQuiz({ ...newQuiz, answer: Number(e.target.value) })}>
-            {newQuiz.options.map((_, i) => <option key={i} value={i}>{`Doğru: Seçenek ${i+1}`}</option>)}
-          </select>
-          <button onClick={handleQuizAdd}>Ekle</button>
+        <div className="timeline-add">
+          <input type="date" value={timelineInput.date} onChange={e => setTimelineInput(i => ({ ...i, date: e.target.value }))} />
+          <input placeholder="Başlık" value={timelineInput.title} onChange={e => setTimelineInput(i => ({ ...i, title: e.target.value }))} />
+          <input placeholder="Açıklama" value={timelineInput.description} onChange={e => setTimelineInput(i => ({ ...i, description: e.target.value }))} />
+          <input type="file" accept="image/*,video/*" onChange={handleTimelineMediaUpload} />
+          {uploading && <span>Yükleniyor...</span>}
+          {timelineInput.media && timelineInput.media.type === 'image' && (
+            <img src={timelineInput.media.src} alt={timelineInput.media.alt} style={{ maxWidth: 80 }} />
+          )}
+          {timelineInput.media && timelineInput.media.type === 'video' && (
+            <video src={timelineInput.media.src} controls style={{ maxWidth: 80 }} />
+          )}
+          <button onClick={handleAddTimeline}>Ekle</button>
         </div>
       </section>
     </div>

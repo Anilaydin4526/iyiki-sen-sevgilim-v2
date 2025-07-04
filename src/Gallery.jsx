@@ -1,26 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContent } from './utils/ContentContext';
 import './Gallery.css';
 
-const defaultGallery = [
-  {
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80',
-    alt: 'Birlikte gülüşümüz',
-  },
-  {
-    type: 'video',
-    src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    alt: 'Birlikte çektiğimiz video',
-  },
-];
-
 function Gallery() {
-  const [gallery, setGallery] = useState(defaultGallery);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('galleryData');
-    if (stored) setGallery(JSON.parse(stored));
-  }, []);
+  const { content } = useContent();
+  const gallery = content?.gallery || [];
 
   return (
     <div className="gallery-container">

@@ -1,34 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useContent } from './utils/ContentContext';
 import './Timeline.css';
 
-const defaultTimeline = [
-  {
-    date: '2022-02-14',
-    title: 'İlk Buluşmamız',
-    description: 'O gün hayatımın en güzel günüydü. İlk defa göz göze geldik ve her şey başladı.',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80',
-  },
-];
-
 function Timeline() {
-  const [timeline, setTimeline] = useState(defaultTimeline);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('timelineData');
-    if (stored) setTimeline(JSON.parse(stored));
-  }, []);
+  const { content } = useContent();
+  const timeline = content?.timeline || [];
 
   return (
     <div className="timeline-container">
-      <h2 className="timeline-title">Zaman Tünelimiz</h2>
+      <h2 className="timeline-title">Zaman Tüneli</h2>
       <div className="timeline-list">
         {timeline.map((item, idx) => (
           <div className="timeline-item" key={idx}>
             <div className="timeline-date">{item.date}</div>
-            <img className="timeline-img" src={item.image} alt={item.title} />
             <div className="timeline-content">
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
+              <div className="timeline-header">{item.title}</div>
+              <div className="timeline-desc">{item.description}</div>
+              {item.media && item.media.type === 'image' && (
+                <img src={item.media.src} alt={item.media.alt} className="timeline-img" />
+              )}
+              {item.media && item.media.type === 'video' && (
+                <video src={item.media.src} controls className="timeline-video" />
+              )}
             </div>
           </div>
         ))}
