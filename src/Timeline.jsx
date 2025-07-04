@@ -1,4 +1,4 @@
-import { useContent } from './utils/ContentContext';
+import { useContent } from './utils/ContentContext.jsx';
 import './Timeline.css';
 
 function Timeline() {

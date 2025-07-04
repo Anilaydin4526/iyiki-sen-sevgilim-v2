@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AdminPanel.css';
 import { uploadToCloudinary } from "./utils/uploadToCloudinary";
-import { useContent } from "./utils/ContentContext";
+import { useContent } from "./utils/ContentContext.jsx";
 
 const password = 'iyikisen2024';
 
