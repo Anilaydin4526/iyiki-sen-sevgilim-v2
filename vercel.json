@@ -6,5 +6,9 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/content.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

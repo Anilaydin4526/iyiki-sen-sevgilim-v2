@@ -1,4 +1,4 @@
-import { useContent } from './utils/ContentContext.jsx';
+import { useContent } from './utils/ContentContext';
 import './MusicPlayer.css';
 
 function MusicPlayer() {
@@ -35,4 +35,4 @@ function MusicPlayer() {
   );
 }
 
-export default MusicPlayer;
+export default MusicPlayer; 

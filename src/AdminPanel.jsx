@@ -1,45 +1,62 @@
 import React, { useState } from 'react';
 import './AdminPanel.css';
 import { uploadToCloudinary } from "./utils/uploadToCloudinary";
-import { useContent } from "./utils/ContentContext.jsx";
-import ParallaxBanner from "./ParallaxBanner";
-import Timeline from "./Timeline";
-import Gallery from "./Gallery";
-import MusicPlayer from "./MusicPlayer";
-import LoveQuiz from "./LoveQuiz";
-import LoveChatbot from "./LoveChatbot";
+import { useContent } from "./utils/ContentContext";
 
-function EditableText({ value, onSave, label, className = "" }) {
+const password = 'iyikisen2024';
+
+function EditableText({ value, onSave, label, multiline = false }) {
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(value);
-  
+
+  const handleSave = () => {
+    setEditing(false);
+    onSave(text);
+  };
+
   return (
-    <div className={`editable-text ${className}`} 
-         onMouseEnter={() => setEditing(true)} 
-         onMouseLeave={() => setEditing(false)}>
+    <div className="editable-text-container">
       {editing ? (
-        <input
-          value={text}
-          onChange={e => setText(e.target.value)}
-          onBlur={() => { setEditing(false); onSave(text); }}
-          onKeyDown={e => { if (e.key === 'Enter') { setEditing(false); onSave(text); } }}
-          autoFocus
-          className="edit-input"
-        />
+        <div className="edit-mode">
+          {multiline ? (
+            <textarea
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onBlur={handleSave}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSave(); } }}
+              autoFocus
+              rows={4}
+              className="edit-textarea"
+            />
+          ) : (
+            <input
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onBlur={handleSave}
+              onKeyDown={e => { if (e.key === 'Enter') { handleSave(); } }}
+              autoFocus
+              className="edit-input"
+            />
+          )}
+          <div className="edit-actions">
+            <button onClick={handleSave} className="save-btn">✓</button>
+            <button onClick={() => { setEditing(false); setText(value); }} className="cancel-btn">✗</button>
+          </div>
+        </div>
       ) : (
-        <span className="editable-content">
-          {text} 
-          <span className="edit-label">✏️ {label}</span>
-        </span>
+        <div className="display-mode" onClick={() => setEditing(true)}>
+          <span className="text-content">{text}</span>
+          <span className="edit-icon">✏️ {label}</span>
+        </div>
       )}
     </div>
   );
 }
 
-function EditableImage({ src, alt, onSave, onDelete, className = "" }) {
-  const [editing, setEditing] = useState(false);
+function MediaUploader({ onUpload, accept = "image/*,video/*,audio/*", label = "Medya Yükle" }) {
   const [uploading, setUploading] = useState(false);
-  const [urlInput, setUrlInput] = useState(src);
+  const [urlInput, setUrlInput] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -47,551 +64,402 @@ function EditableImage({ src, alt, onSave, onDelete, className = "" }) {
     
     setUploading(true);
     try {
-      const url = await uploadToCloudinary(file, "image");
-      onSave({ src: url, alt: file.name });
+      let resourceType = "auto";
+      if (file.type.startsWith("image/")) resourceType = "image";
+      else if (file.type.startsWith("video/")) resourceType = "video";
+      else if (file.type.startsWith("audio/")) resourceType = "video";
+      
+      const url = await uploadToCloudinary(file, resourceType);
+      const newItem = {
+        type: file.type.startsWith("image/") ? "image" : file.type.startsWith("video/") ? "video" : "audio",
+        src: url,
+        alt: file.name
+      };
+      onUpload(newItem);
     } catch (error) {
-      console.error("Yükleme hatası:", error);
+      console.error('Upload failed:', error);
     }
     setUploading(false);
-    setEditing(false);
   };
 
-  const handleUrlSave = () => {
-    onSave({ src: urlInput, alt: alt });
-    setEditing(false);
-  };
-
-  return (
-    <div className={`editable-image ${className}`} 
-         onMouseEnter={() => setEditing(true)} 
-         onMouseLeave={() => setEditing(false)}>
-      <img src={src} alt={alt} />
-      {editing && (
-        <div className="image-edit-overlay">
-          <div className="edit-options">
-            <div className="url-input-section">
-              <input
-                type="text"
-                value={urlInput}
-                onChange={e => setUrlInput(e.target.value)}
-                placeholder="URL girin"
-                className="url-input"
-              />
-              <button onClick={handleUrlSave} className="url-save-btn">URL Kaydet</button>
-            </div>
-            <div className="file-upload-section">
-              <input 
-                type="file" 
-                accept="image/*,video/*,audio/*" 
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-                id="media-upload"
-              />
-              <label htmlFor="media-upload" className="upload-btn">
-                {uploading ? "Yükleniyor..." : "Dosya Yükle"}
-              </label>
-            </div>
-            <button className="delete-btn" onClick={onDelete}>Sil</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function EditableVideo({ src, alt, onSave, onDelete, className = "" }) {
-  const [editing, setEditing] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [urlInput, setUrlInput] = useState(src);
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const handleUrlSubmit = () => {
+    if (!urlInput.trim()) return;
     
-    setUploading(true);
-    try {
-      const url = await uploadToCloudinary(file, "video");
-      onSave({ src: url, alt: file.name });
-    } catch (error) {
-      console.error("Yükleme hatası:", error);
-    }
-    setUploading(false);
-    setEditing(false);
-  };
-
-  const handleUrlSave = () => {
-    onSave({ src: urlInput, alt: alt });
-    setEditing(false);
-  };
-
-  return (
-    <div className={`editable-video ${className}`} 
-         onMouseEnter={() => setEditing(true)} 
-         onMouseLeave={() => setEditing(false)}>
-      <video controls>
-        <source src={src} type="video/mp4" />
-        Tarayıcınız video oynatmayı desteklemiyor.
-      </video>
-      {editing && (
-        <div className="video-edit-overlay">
-          <div className="edit-options">
-            <div className="url-input-section">
-              <input
-                type="text"
-                value={urlInput}
-                onChange={e => setUrlInput(e.target.value)}
-                placeholder="Video URL girin"
-                className="url-input"
-              />
-              <button onClick={handleUrlSave} className="url-save-btn">URL Kaydet</button>
-            </div>
-            <div className="file-upload-section">
-              <input 
-                type="file" 
-                accept="video/*" 
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-                id="video-upload"
-              />
-              <label htmlFor="video-upload" className="upload-btn">
-                {uploading ? "Yükleniyor..." : "Video Yükle"}
-              </label>
-            </div>
-            <button className="delete-btn" onClick={onDelete}>Sil</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function EditableAudio({ src, alt, onSave, onDelete, className = "" }) {
-  const [editing, setEditing] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [urlInput, setUrlInput] = useState(src);
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const fileType = urlInput.toLowerCase();
+    let type = "image";
+    if (fileType.includes('.mp4') || fileType.includes('.avi') || fileType.includes('.mov')) type = "video";
+    else if (fileType.includes('.mp3') || fileType.includes('.wav')) type = "audio";
     
-    setUploading(true);
-    try {
-      const url = await uploadToCloudinary(file, "video");
-      onSave({ src: url, alt: file.name });
-    } catch (error) {
-      console.error("Yükleme hatası:", error);
-    }
-    setUploading(false);
-    setEditing(false);
-  };
-
-  const handleUrlSave = () => {
-    onSave({ src: urlInput, alt: alt });
-    setEditing(false);
+    const newItem = {
+      type,
+      src: urlInput,
+      alt: "URL'den yüklenen medya"
+    };
+    onUpload(newItem);
+    setUrlInput('');
+    setShowUrlInput(false);
   };
 
   return (
-    <div className={`editable-audio ${className}`} 
-         onMouseEnter={() => setEditing(true)} 
-         onMouseLeave={() => setEditing(false)}>
-      <audio controls>
-        <source src={src} type="audio/mpeg" />
-        Tarayıcınız ses oynatmayı desteklemiyor.
-      </audio>
-      {editing && (
-        <div className="audio-edit-overlay">
-          <div className="edit-options">
-            <div className="url-input-section">
-              <input
-                type="text"
-                value={urlInput}
-                onChange={e => setUrlInput(e.target.value)}
-                placeholder="Ses URL girin"
-                className="url-input"
-              />
-              <button onClick={handleUrlSave} className="url-save-btn">URL Kaydet</button>
-            </div>
-            <div className="file-upload-section">
-              <input 
-                type="file" 
-                accept="audio/*" 
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-                id="audio-upload"
-              />
-              <label htmlFor="audio-upload" className="upload-btn">
-                {uploading ? "Yükleniyor..." : "Ses Yükle"}
-              </label>
-            </div>
-            <button className="delete-btn" onClick={onDelete}>Sil</button>
-          </div>
+    <div className="media-uploader">
+      <div className="upload-options">
+        <label className="file-upload-btn">
+          <input type="file" accept={accept} onChange={handleFileUpload} />
+          📁 Dosya Seç
+        </label>
+        <button 
+          className="url-upload-btn"
+          onClick={() => setShowUrlInput(!showUrlInput)}
+        >
+          🔗 URL Ekle
+        </button>
+      </div>
+      
+      {showUrlInput && (
+        <div className="url-input-section">
+          <input
+            type="url"
+            placeholder="Medya URL'si girin..."
+            value={urlInput}
+            onChange={e => setUrlInput(e.target.value)}
+            className="url-input"
+          />
+          <button onClick={handleUrlSubmit} className="url-submit-btn">Ekle</button>
         </div>
       )}
+      
+      {uploading && <div className="upload-status">⏳ Yükleniyor...</div>}
     </div>
   );
 }
 
 function AdminPanel() {
   const { content, updateContent, loading } = useContent();
-  const [uploading, setUploading] = useState(false);
+  const [step, setStep] = useState('login');
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
+  const [activeSection, setActiveSection] = useState('main');
 
-  // Zaman tüneli ekleme için state
-  const [timelineInput, setTimelineInput] = useState({ date: '', title: '', description: '', media: null });
+  if (step === 'login') {
+    return (
+      <div className="admin-login-container">
+        <div className="heart-animation">❤️</div>
+        <h2>Admin Paneli Girişi</h2>
+        <input
+          type="password"
+          placeholder="Şifre"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              if (input === password) setStep('panel');
+              else setError('Hatalı şifre!');
+            }
+          }}
+        />
+        <button onClick={() => {
+          if (input === password) setStep('panel');
+          else setError('Hatalı şifre!');
+        }}>Giriş</button>
+        {error && <div className="admin-error">{error}</div>}
+      </div>
+    );
+  }
 
-  if (!content) return null;
+  if (!content) return <div className="loading">Yükleniyor...</div>;
 
-  // Başlık, açıklama, bannerText düzenleme
   const handleTextSave = (field, value) => {
     updateContent({ [field]: value });
   };
 
-  // Galeriye yeni medya ekleme
-  const handleMediaUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    let resourceType = "auto";
-    if (file.type.startsWith("image/")) resourceType = "image";
-    else if (file.type.startsWith("video/")) resourceType = "video";
-    else if (file.type.startsWith("audio/")) resourceType = "video";
-    const url = await uploadToCloudinary(file, resourceType);
-    const newItem = {
-      type: file.type.startsWith("image/") ? "image" : file.type.startsWith("video/") ? "video" : "audio",
-      src: url,
-      alt: file.name
-    };
+  const handleGalleryUpload = (newItem) => {
     updateContent({ gallery: [...(content.gallery || []), newItem] });
-    setUploading(false);
   };
 
-  // Galeriden medya silme
-  const handleDeleteMedia = idx => {
+  const handleDeleteGallery = (idx) => {
     const newGallery = content.gallery.filter((_, i) => i !== idx);
     updateContent({ gallery: newGallery });
   };
 
-  // Galeri medya güncelleme
-  const handleUpdateMedia = (idx, updatedMedia) => {
-    const newGallery = [...content.gallery];
-    newGallery[idx] = updatedMedia;
-    updateContent({ gallery: newGallery });
+  const handleMusicUpload = (newItem) => {
+    updateContent({ music: [...(content.music || []), newItem] });
   };
 
-  // Müzik ekleme
-  const [musicInput, setMusicInput] = useState({ title: '', artist: '', src: '' });
-  const handleAddMusic = () => {
-    if (!musicInput.title || !musicInput.artist || !musicInput.src) return;
-    updateContent({ music: [...(content.music || []), musicInput] });
-    setMusicInput({ title: '', artist: '', src: '' });
-  };
-  
-  // Müzik silme
-  const handleDeleteMusic = idx => {
+  const handleDeleteMusic = (idx) => {
     const newMusic = content.music.filter((_, i) => i !== idx);
     updateContent({ music: newMusic });
   };
 
-  // Müzik güncelleme
-  const handleUpdateMusic = (idx, updatedMusic) => {
-    const newMusic = [...content.music];
-    newMusic[idx] = updatedMusic;
-    updateContent({ music: newMusic });
+  const handleTimelineUpload = (newItem) => {
+    updateContent({ timeline: [...(content.timeline || []), newItem] });
   };
 
-  // Zaman tüneline yeni olay ekle
-  const handleAddTimeline = () => {
-    if (!timelineInput.date || !timelineInput.title) return;
-    updateContent({ timeline: [...(content.timeline || []), timelineInput] });
-    setTimelineInput({ date: '', title: '', description: '', media: null });
-  };
-  
-  // Zaman tünelinden olay sil
-  const handleDeleteTimeline = idx => {
+  const handleDeleteTimeline = (idx) => {
     const newTimeline = content.timeline.filter((_, i) => i !== idx);
     updateContent({ timeline: newTimeline });
   };
-  
-  // Zaman tüneli medya yükleme
-  const handleTimelineMediaUpload = async (e) => {
+
+  const navigationItems = [
+    { id: 'main', label: 'Ana İçerik', icon: '🏠' },
+    { id: 'gallery', label: 'Galeri', icon: '📸' },
+    { id: 'music', label: 'Müzik', icon: '🎵' },
+    { id: 'timeline', label: 'Zaman Tüneli', icon: '📅' }
+  ];
+
+  return (
+    <div className="admin-panel-container">
+      <div className="admin-header">
+        <div className="heart-animation">❤️</div>
+        <h1 className="main-title">Admin Paneli</h1>
+        <p className="subtitle">İçerikleri düzenle ve yönet</p>
+      </div>
+
+      <div className="admin-navigation">
+        {navigationItems.map(item => (
+          <button
+            key={item.id}
+            className={`nav-btn ${activeSection === item.id ? 'active' : ''}`}
+            onClick={() => setActiveSection(item.id)}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="admin-content">
+        {activeSection === 'main' && (
+          <div className="content-section">
+            <h3>Ana Sayfa İçerikleri</h3>
+            
+            <div className="edit-group">
+              <label>Site Başlığı:</label>
+              <EditableText 
+                value={content.title || "İyiki Sen Sevgilim"} 
+                onSave={v => handleTextSave('title', v)} 
+                label="Düzenle" 
+              />
+            </div>
+
+            <div className="edit-group">
+              <label>Alt Başlık:</label>
+              <EditableText 
+                value={content.description || "Birlikte geçirdiğimiz her an, bu sitede sonsuza dek yaşayacak..."} 
+                onSave={v => handleTextSave('description', v)} 
+                label="Düzenle" 
+              />
+            </div>
+
+            <div className="edit-group">
+              <label>Banner Yazısı:</label>
+              <EditableText 
+                value={content.bannerText || "Birlikte her an, sonsuz bir masal gibi..."} 
+                onSave={v => handleTextSave('bannerText', v)} 
+                label="Düzenle" 
+              />
+            </div>
+
+            <div className="edit-group">
+              <label>Hoş Geldin Mesajı:</label>
+              <EditableText 
+                value={content.welcomeMessage || "Hoş geldin Gülüm..."} 
+                onSave={v => handleTextSave('welcomeMessage', v)} 
+                label="Düzenle" 
+                multiline={true}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'gallery' && (
+          <div className="content-section">
+            <h3>Galeri Yönetimi</h3>
+            
+            <MediaUploader 
+              onUpload={handleGalleryUpload}
+              accept="image/*,video/*"
+              label="Galeriye Medya Ekle"
+            />
+
+            <div className="media-grid">
+              {(content.gallery || []).map((media, i) => (
+                <div key={i} className="media-item">
+                  <div className="media-preview">
+                    {media.type === "image" && (
+                      <img src={media.src} alt={media.alt} />
+                    )}
+                    {media.type === "video" && (
+                      <video src={media.src} controls />
+                    )}
+                  </div>
+                  <div className="media-info">
+                    <span className="media-name">{media.alt}</span>
+                    <span className="media-type">{media.type}</span>
+                  </div>
+                  <button 
+                    className="delete-btn" 
+                    onClick={() => handleDeleteGallery(i)}
+                    title="Sil"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'music' && (
+          <div className="content-section">
+            <h3>Müzik Yönetimi</h3>
+            
+            <MediaUploader 
+              onUpload={handleMusicUpload}
+              accept="audio/*"
+              label="Müzik Ekle"
+            />
+
+            <div className="music-list">
+              {(content.music || []).map((music, i) => (
+                <div key={i} className="music-item">
+                  <div className="music-info">
+                    <span className="music-title">{music.title}</span>
+                    <span className="music-artist">{music.artist}</span>
+                  </div>
+                  <audio src={music.src} controls />
+                  <button 
+                    className="delete-btn" 
+                    onClick={() => handleDeleteMusic(i)}
+                    title="Sil"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'timeline' && (
+          <div className="content-section">
+            <h3>Zaman Tüneli Yönetimi</h3>
+            
+            <TimelineEditor onAdd={handleTimelineUpload} />
+
+            <div className="timeline-list">
+              {(content.timeline || []).map((item, i) => (
+                <div key={i} className="timeline-item">
+                  <div className="timeline-date">{item.date}</div>
+                  <div className="timeline-content">
+                    <h4>{item.title}</h4>
+                    <p>{item.description}</p>
+                    {item.media && (
+                      <div className="timeline-media">
+                        {item.media.type === 'image' && (
+                          <img src={item.media.src} alt={item.media.alt} />
+                        )}
+                        {item.media.type === 'video' && (
+                          <video src={item.media.src} controls />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <button 
+                    className="delete-btn" 
+                    onClick={() => handleDeleteTimeline(i)}
+                    title="Sil"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TimelineEditor({ onAdd }) {
+  const [timelineData, setTimelineData] = useState({
+    date: '',
+    title: '',
+    description: '',
+    media: null
+  });
+  const [uploading, setUploading] = useState(false);
+
+  const handleSubmit = () => {
+    if (!timelineData.date || !timelineData.title) return;
+    onAdd(timelineData);
+    setTimelineData({ date: '', title: '', description: '', media: null });
+  };
+
+  const handleMediaUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    
     setUploading(true);
-    let resourceType = "auto";
-    if (file.type.startsWith("image/")) resourceType = "image";
-    else if (file.type.startsWith("video/")) resourceType = "video";
-    const url = await uploadToCloudinary(file, resourceType);
-    setTimelineInput(input => ({ ...input, media: { type: resourceType, src: url, alt: file.name } }));
+    try {
+      let resourceType = "auto";
+      if (file.type.startsWith("image/")) resourceType = "image";
+      else if (file.type.startsWith("video/")) resourceType = "video";
+      
+      const url = await uploadToCloudinary(file, resourceType);
+      setTimelineData(prev => ({
+        ...prev,
+        media: { type: resourceType, src: url, alt: file.name }
+      }));
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
     setUploading(false);
   };
 
-  // Zaman tüneli güncelleme
-  const handleUpdateTimeline = (idx, updatedTimeline) => {
-    const newTimeline = [...content.timeline];
-    newTimeline[idx] = updatedTimeline;
-    updateContent({ timeline: newTimeline });
-  };
-
   return (
-    <div className="admin-panel">
-      <h2>Admin Paneli - Ana Ekran Önizleme ve Düzenleme</h2>
-      
-      {/* Ana Ekran Önizleme */}
-      <div className="admin-preview">
-        <h3>Ana Ekran Önizleme</h3>
-        <div className="preview-container">
-          <div className="main-bg">
-            <div className="header-center">
-              <center><div className="heart-animation">❤️</div></center>
-              <center>
-                <EditableText 
-                  value={content.title} 
-                  onSave={v => handleTextSave('title', v)} 
-                  label="Başlık Düzenle" 
-                  className="main-title"
-                />
-              </center>
-              <center>
-                <EditableText 
-                  value={content.description} 
-                  onSave={v => handleTextSave('description', v)} 
-                  label="Açıklama Düzenle" 
-                  className="subtitle"
-                />
-              </center>
-            </div>
-            <div className="welcome-message">
-              <center>
-                <EditableText 
-                  value={content.welcomeMessage || "Hoş geldin!"} 
-                  onSave={v => handleTextSave('welcomeMessage', v)} 
-                  label="Hoş Geldin Mesajı Düzenle" 
-                />
-              </center>
-            </div>
-            <div className="banner-section">
-              <EditableText 
-                value={content.bannerText} 
-                onSave={v => handleTextSave('bannerText', v)} 
-                label="Banner Yazısı Düzenle" 
-                className="banner-text"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Galeri Yönetimi */}
-      <div className="admin-section">
-        <h3>Galeri Yönetimi</h3>
-        <div className="gallery-preview">
-          <h4>Mevcut Galeri Öğeleri</h4>
-          <div className="gallery-items">
-            {content.gallery && content.gallery.map((item, idx) => (
-              <div key={idx} className="gallery-item-admin">
-                {item.type === 'image' && (
-                  <EditableImage
-                    src={item.src}
-                    alt={item.alt}
-                    onSave={(updated) => handleUpdateMedia(idx, { ...item, ...updated })}
-                    onDelete={() => handleDeleteMedia(idx)}
-                    className="gallery-image"
-                  />
-                )}
-                {item.type === 'video' && (
-                  <EditableVideo
-                    src={item.src}
-                    alt={item.alt}
-                    onSave={(updated) => handleUpdateMedia(idx, { ...item, ...updated })}
-                    onDelete={() => handleDeleteMedia(idx)}
-                    className="gallery-video"
-                  />
-                )}
-                {item.type === 'audio' && (
-                  <EditableAudio
-                    src={item.src}
-                    alt={item.alt}
-                    onSave={(updated) => handleUpdateMedia(idx, { ...item, ...updated })}
-                    onDelete={() => handleDeleteMedia(idx)}
-                    className="gallery-audio"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="add-media-section">
-            <h4>Yeni Medya Ekle</h4>
-            <input 
-              type="file" 
-              accept="image/*,video/*,audio/*" 
-              onChange={handleMediaUpload}
-              className="file-input"
-            />
-            {uploading && <p>Yükleniyor...</p>}
-          </div>
-        </div>
-      </div>
-
-      {/* Müzik Yönetimi */}
-      <div className="admin-section">
-        <h3>Müzik Yönetimi</h3>
-        <div className="music-preview">
-          <h4>Mevcut Müzikler</h4>
-          {content.music && content.music.map((song, idx) => (
-            <div key={idx} className="music-item-admin">
-              <EditableText
-                value={song.title}
-                onSave={(value) => handleUpdateMusic(idx, { ...song, title: value })}
-                label="Şarkı Adı"
-                className="music-title"
-              />
-              <EditableText
-                value={song.artist}
-                onSave={(value) => handleUpdateMusic(idx, { ...song, artist: value })}
-                label="Sanatçı"
-                className="music-artist"
-              />
-              <EditableText
-                value={song.src}
-                onSave={(value) => handleUpdateMusic(idx, { ...song, src: value })}
-                label="Müzik URL"
-                className="music-url"
-              />
-              <button onClick={() => handleDeleteMusic(idx)} className="delete-music-btn">Müziği Sil</button>
-            </div>
-          ))}
-          <div className="add-music-section">
-            <h4>Yeni Müzik Ekle</h4>
-            <input
-              type="text"
-              placeholder="Şarkı Adı"
-              value={musicInput.title}
-              onChange={e => setMusicInput({ ...musicInput, title: e.target.value })}
-              className="music-input"
-            />
-            <input
-              type="text"
-              placeholder="Sanatçı"
-              value={musicInput.artist}
-              onChange={e => setMusicInput({ ...musicInput, artist: e.target.value })}
-              className="music-input"
-            />
-            <input
-              type="text"
-              placeholder="Müzik URL"
-              value={musicInput.src}
-              onChange={e => setMusicInput({ ...musicInput, src: e.target.value })}
-              className="music-input"
-            />
-            <button onClick={handleAddMusic} className="add-music-btn">Müzik Ekle</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Zaman Tüneli Yönetimi */}
-      <div className="admin-section">
-        <h3>Zaman Tüneli Yönetimi</h3>
-        <div className="timeline-preview">
-          <h4>Mevcut Zaman Tüneli Öğeleri</h4>
-          {content.timeline && content.timeline.map((event, idx) => (
-            <div key={idx} className="timeline-item-admin">
-              <EditableText
-                value={event.date}
-                onSave={(value) => handleUpdateTimeline(idx, { ...event, date: value })}
-                label="Tarih"
-                className="timeline-date"
-              />
-              <EditableText
-                value={event.title}
-                onSave={(value) => handleUpdateTimeline(idx, { ...event, title: value })}
-                label="Başlık"
-                className="timeline-title"
-              />
-              <EditableText
-                value={event.description}
-                onSave={(value) => handleUpdateTimeline(idx, { ...event, description: value })}
-                label="Açıklama"
-                className="timeline-description"
-              />
-              {event.media && (
-                <div className="timeline-media">
-                  {event.media.type === 'image' && (
-                    <EditableImage
-                      src={event.media.src}
-                      alt={event.media.alt}
-                      onSave={(updated) => handleUpdateTimeline(idx, { ...event, media: { ...event.media, ...updated } })}
-                      onDelete={() => handleUpdateTimeline(idx, { ...event, media: null })}
-                      className="timeline-image"
-                    />
-                  )}
-                  {event.media.type === 'video' && (
-                    <EditableVideo
-                      src={event.media.src}
-                      alt={event.media.alt}
-                      onSave={(updated) => handleUpdateTimeline(idx, { ...event, media: { ...event.media, ...updated } })}
-                      onDelete={() => handleUpdateTimeline(idx, { ...event, media: null })}
-                      className="timeline-video"
-                    />
-                  )}
-                </div>
+    <div className="timeline-editor">
+      <div className="timeline-form">
+        <input
+          type="date"
+          value={timelineData.date}
+          onChange={e => setTimelineData(prev => ({ ...prev, date: e.target.value }))}
+          placeholder="Tarih"
+        />
+        <input
+          type="text"
+          value={timelineData.title}
+          onChange={e => setTimelineData(prev => ({ ...prev, title: e.target.value }))}
+          placeholder="Başlık"
+        />
+        <textarea
+          value={timelineData.description}
+          onChange={e => setTimelineData(prev => ({ ...prev, description: e.target.value }))}
+          placeholder="Açıklama"
+          rows={3}
+        />
+        
+        <div className="media-upload-section">
+          <label className="file-upload-btn">
+            <input type="file" accept="image/*,video/*" onChange={handleMediaUpload} />
+            📷 Medya Ekle
+          </label>
+          {uploading && <span>Yükleniyor...</span>}
+          {timelineData.media && (
+            <div className="media-preview">
+              {timelineData.media.type === 'image' && (
+                <img src={timelineData.media.src} alt={timelineData.media.alt} />
               )}
-              <button onClick={() => handleDeleteTimeline(idx)} className="delete-timeline-btn">Olayı Sil</button>
+              {timelineData.media.type === 'video' && (
+                <video src={timelineData.media.src} controls />
+              )}
             </div>
-          ))}
-          <div className="add-timeline-section">
-            <h4>Yeni Zaman Tüneli Olayı Ekle</h4>
-            <input
-              type="text"
-              placeholder="Tarih (YYYY-MM-DD)"
-              value={timelineInput.date}
-              onChange={e => setTimelineInput({ ...timelineInput, date: e.target.value })}
-              className="timeline-input"
-            />
-            <input
-              type="text"
-              placeholder="Başlık"
-              value={timelineInput.title}
-              onChange={e => setTimelineInput({ ...timelineInput, title: e.target.value })}
-              className="timeline-input"
-            />
-            <input
-              type="text"
-              placeholder="Açıklama"
-              value={timelineInput.description}
-              onChange={e => setTimelineInput({ ...timelineInput, description: e.target.value })}
-              className="timeline-input"
-            />
-            <input
-              type="file"
-              accept="image/*,video/*"
-              onChange={handleTimelineMediaUpload}
-              className="timeline-media-input"
-            />
-            <button onClick={handleAddTimeline} className="add-timeline-btn">Olay Ekle</button>
-          </div>
+          )}
         </div>
-      </div>
-
-      {/* Tam Önizleme */}
-      <div className="admin-section">
-        <h3>Tam Site Önizleme</h3>
-        <div className="full-preview">
-          <div className="main-bg">
-            <div className="header-center">
-              <center><div className="heart-animation">❤️</div></center>
-              <center><h1 className="main-title">{content.title}</h1></center>
-              <center><p className="subtitle">{content.description}</p></center>
-            </div>
-            <div className="welcome-message">
-              <center><p>{content.welcomeMessage || "Hoş geldin!"}</p></center>
-            </div>
-            <ParallaxBanner bannerText={content.bannerText} />
-            <Timeline />
-            <Gallery />
-            <MusicPlayer />
-            <LoveQuiz />
-            <LoveChatbot />
-          </div>
-        </div>
+        
+        <button onClick={handleSubmit} className="add-btn">
+          ➕ Zaman Tüneli Ekle
+        </button>
       </div>
     </div>
   );

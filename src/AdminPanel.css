@@ -1,619 +1,610 @@
+/* Admin Panel Container */
 .admin-login-container, .admin-panel-container {
-  margin: 4rem auto 2rem auto;
-  max-width: 540px;
+  margin: 2rem auto;
+  max-width: 1200px;
   min-width: 320px;
   width: 95vw;
-  background: rgba(255,255,255,0.97);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 24px;
-  box-shadow: 0 4px 32px #b3121722;
-  padding: 2.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 8px 32px rgba(179, 18, 23, 0.15);
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.admin-login-container h2, .admin-panel-container h2 {
+
+/* Login Screen */
+.admin-login-container {
+  text-align: center;
+  max-width: 500px;
+}
+
+.admin-login-container h2 {
   color: #b31217;
   font-family: 'Segoe Script', 'Comic Sans MS', cursive;
   margin-bottom: 1.5rem;
-  text-align: center;
+  font-size: 2rem;
 }
-.admin-panel-container h3 {
-  color: #7b1fa2;
-  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-  margin: 2.2rem 0 1rem 0;
-  text-align: center;
-}
-.admin-login-container input, .admin-panel-container input, .admin-panel-container select {
+
+.admin-login-container input {
   width: 100%;
-  padding: 0.7rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #b3121722;
-  font-size: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #f0f0f0;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
+  transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
-.admin-login-container button, .admin-panel-container button {
-  background: #b31217;
-  color: #fff;
+
+.admin-login-container input:focus {
+  outline: none;
+  border-color: #b31217;
+  box-shadow: 0 0 0 3px rgba(179, 18, 23, 0.1);
+}
+
+.admin-login-container button {
+  background: linear-gradient(135deg, #b31217, #7b1fa2);
+  color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s;
-  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  font-weight: bold;
 }
-.admin-login-container button:hover, .admin-panel-container button:hover {
-  background: #7b1fa2;
+
+.admin-login-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(179, 18, 23, 0.3);
 }
+
 .admin-error {
   color: #b31217;
   margin-top: 1rem;
   font-weight: bold;
+  background: rgba(179, 18, 23, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+/* Admin Panel Header */
+.admin-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header .heart-animation {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.admin-header .main-title {
+  color: #b31217;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-header .subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Navigation */
+.admin-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  border-color: #b31217;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(179, 18, 23, 0.2);
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, #b31217, #7b1fa2);
+  color: white;
+  border-color: #b31217;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+}
+
+.nav-label {
+  font-size: 0.9rem;
+}
+
+/* Content Sections */
+.admin-content {
+  min-height: 400px;
+}
+
+.content-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.content-section h3 {
+  color: #7b1fa2;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
-.admin-list {
-  width: 100%;
-  margin-bottom: 1.2rem;
-}
-.admin-item {
-  background: #fff6fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px #b3121711;
-  padding: 0.7rem 1rem;
-  margin-bottom: 0.7rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.admin-add {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+/* Edit Groups */
+.edit-group {
   margin-bottom: 1.5rem;
 }
-@media (max-width: 700px) {
-  .admin-login-container, .admin-panel-container {
-    max-width: 98vw;
-    padding: 1.2rem 0.5rem;
-  }
-  .admin-item {
-    padding: 0.5rem 0.5rem;
-  }
-}
 
-.admin-panel {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.admin-panel h2 {
-  text-align: center;
-  color: #e91e63;
-  margin-bottom: 30px;
-  font-size: 2.5em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.admin-sections {
-  display: grid;
-  gap: 30px;
-}
-
-.admin-section {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid rgba(233, 30, 99, 0.2);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  margin-bottom: 30px;
-}
-
-.admin-section h3 {
-  color: #e91e63;
-  margin-bottom: 20px;
-  font-size: 1.5em;
-  border-bottom: 2px solid #e91e63;
-  padding-bottom: 10px;
-}
-
-.admin-section h4 {
-  color: #7b1fa2;
-  margin: 15px 0 10px 0;
-  font-size: 1.2em;
-}
-
-/* Admin Preview Styles */
-.admin-preview {
-  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-}
-
-.preview-container {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.full-preview {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-/* Editable Text Styles */
-.editable-text {
-  position: relative;
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  margin: 5px;
-}
-
-.editable-text:hover {
-  background: rgba(233, 30, 99, 0.1);
-  transform: translateY(-2px);
-}
-
-.editable-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.edit-label {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  color: #e91e63;
-  font-size: 0.9em;
+.edit-group label {
+  display: block;
   font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
-.editable-text:hover .edit-label {
+/* Editable Text */
+.editable-text-container {
+  position: relative;
+}
+
+.display-mode {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.display-mode:hover {
+  border-color: #b31217;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.text-content {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.display-mode:hover .edit-icon {
   opacity: 1;
 }
 
-.edit-input {
-  border: 2px solid #e91e63;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1em;
-  width: 100%;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.edit-input:focus {
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
-}
-
-/* Editable Media Styles */
-.editable-image, .editable-video, .editable-audio {
+.edit-mode {
   position: relative;
-  display: inline-block;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  margin: 10px;
 }
 
-.editable-image:hover, .editable-video:hover, .editable-audio:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.editable-image img {
-  max-width: 200px;
-  height: auto;
-  display: block;
-}
-
-.editable-video video {
-  max-width: 300px;
-  height: auto;
-  display: block;
-}
-
-.editable-audio audio {
-  max-width: 300px;
-  display: block;
-}
-
-.image-edit-overlay, .video-edit-overlay, .audio-edit-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-  border-radius: 12px;
-}
-
-.edit-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.edit-input, .edit-textarea {
   width: 100%;
-  max-width: 250px;
+  padding: 1rem;
+  border: 2px solid #b31217;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.edit-textarea {
+  min-height: 100px;
+}
+
+.edit-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.save-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.save-btn:hover, .cancel-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Media Uploader */
+.media-uploader {
+  margin-bottom: 2rem;
+}
+
+.upload-options {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.file-upload-btn, .url-upload-btn {
+  background: linear-gradient(135deg, #b31217, #7b1fa2);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-upload-btn:hover, .url-upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(179, 18, 23, 0.3);
+}
+
+.file-upload-btn input[type="file"] {
+  display: none;
 }
 
 .url-input-section {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .url-input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.9em;
-  width: 100%;
+  flex: 1;
+  padding: 0.8rem;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
-.url-save-btn {
+.url-submit-btn {
   background: #4caf50;
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.url-save-btn:hover {
-  background: #45a049;
-}
-
-.file-upload-section {
-  display: flex;
-  justify-content: center;
-}
-
-.upload-btn {
-  background: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: background 0.3s;
-  text-align: center;
-  display: inline-block;
-}
-
-.upload-btn:hover {
-  background: #1976d2;
-}
-
-.delete-btn {
-  background: #f44336;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.delete-btn:hover {
-  background: #d32f2f;
-}
-
-/* Gallery Management Styles */
-.gallery-preview {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.gallery-items {
+.upload-status {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* Media Grid */
+.media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.gallery-item-admin {
+.media-item {
   background: white;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
   transition: transform 0.3s ease;
 }
 
-.gallery-item-admin:hover {
+.media-item:hover {
   transform: translateY(-2px);
 }
 
-.add-media-section {
-  background: rgba(233, 30, 99, 0.1);
-  padding: 15px;
+.media-preview img, .media-preview video {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
   border-radius: 8px;
-  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-.file-input {
-  margin: 10px 0;
-  padding: 10px;
-  border: 2px dashed #e91e63;
-  border-radius: 8px;
-  background: rgba(233, 30, 99, 0.05);
+.media-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.media-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.media-type {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
 }
 
-/* Music Management Styles */
-.music-preview {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.delete-btn:hover {
+  background: #f44336;
+  transform: scale(1.1);
 }
 
-.music-item-admin {
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Music List */
+.music-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.music-title, .music-artist, .music-url {
+.music-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.music-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.music-title {
   font-weight: bold;
   color: #333;
 }
 
-.delete-music-btn {
-  background: #f44336;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background 0.3s;
-  align-self: flex-start;
+.music-artist {
+  color: #666;
+  font-size: 0.9rem;
 }
 
-.delete-music-btn:hover {
-  background: #d32f2f;
+.music-item audio {
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
-.add-music-section {
-  background: rgba(233, 30, 99, 0.1);
-  padding: 15px;
-  border-radius: 8px;
+/* Timeline */
+.timeline-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.music-input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1em;
-}
-
-.add-music-btn {
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.add-music-btn:hover {
-  background: #45a049;
-}
-
-/* Timeline Management Styles */
-.timeline-preview {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.timeline-item-admin {
+.timeline-item {
   background: white;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.timeline-date, .timeline-title, .timeline-description {
+.timeline-date {
+  background: linear-gradient(135deg, #b31217, #7b1fa2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   font-weight: bold;
+  min-width: 100px;
+  text-align: center;
+  height: fit-content;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-content h4 {
   color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.timeline-media {
-  margin: 10px 0;
+.timeline-content p {
+  color: #666;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
-.delete-timeline-btn {
-  background: #f44336;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background 0.3s;
-  align-self: flex-start;
-}
-
-.delete-timeline-btn:hover {
-  background: #d32f2f;
-}
-
-.add-timeline-section {
-  background: rgba(233, 30, 99, 0.1);
-  padding: 15px;
+.timeline-media img, .timeline-media video {
+  max-width: 120px;
   border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+/* Timeline Editor */
+.timeline-editor {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 2px dashed #b31217;
+}
+
+.timeline-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.timeline-input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1em;
+.timeline-form input, .timeline-form textarea {
+  padding: 0.8rem;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
 }
 
-.timeline-media-input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1em;
+.timeline-form input:focus, .timeline-form textarea:focus {
+  outline: none;
+  border-color: #b31217;
 }
 
-.add-timeline-btn {
-  background: #4caf50;
+.media-upload-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #4caf50, #45a049);
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 1em;
+  border-radius: 12px;
+  padding: 1rem 2rem;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
-.add-timeline-btn:hover {
-  background: #45a049;
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
-/* Main Content Styles for Preview */
-.main-bg {
-  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.header-center {
+/* Loading */
+.loading {
   text-align: center;
-  margin-bottom: 30px;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.2rem;
 }
 
-.heart-animation {
-  font-size: 3em;
-  animation: heartbeat 1.5s ease-in-out infinite;
-}
-
-@keyframes heartbeat {
+/* Animations */
+@keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
 }
 
-.main-title {
-  font-size: 2.5em;
-  color: #e91e63;
-  margin: 10px 0;
-  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
-}
-
-.subtitle {
-  font-size: 1.2em;
-  color: #7b1fa2;
-  margin: 10px 0;
-}
-
-.welcome-message {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 15px;
-  border-radius: 8px;
-  margin: 20px 0;
-  text-align: center;
-}
-
-.banner-section {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.banner-text {
-  font-size: 1.5em;
-  color: #e91e63;
-  font-weight: bold;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-  .admin-panel {
-    padding: 15px;
-    margin: 10px;
+  .admin-login-container, .admin-panel-container {
+    margin: 1rem;
+    padding: 1rem;
+    width: calc(100vw - 2rem);
   }
   
-  .admin-section {
-    padding: 15px;
+  .admin-navigation {
+    flex-direction: column;
+    align-items: center;
   }
   
-  .gallery-items {
-    grid-template-columns: 1fr;
-  }
-  
-  .edit-options {
+  .nav-btn {
+    width: 100%;
     max-width: 200px;
   }
   
-  .main-title {
-    font-size: 2em;
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
   
-  .subtitle {
-    font-size: 1em;
+  .timeline-item {
+    flex-direction: column;
+  }
+  
+  .timeline-date {
+    align-self: flex-start;
+  }
+  
+  .upload-options {
+    flex-direction: column;
+  }
+  
+  .url-input-section {
+    flex-direction: column;
+  }
+  
+  .edit-actions {
+    position: static;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
   }
 }
 
 @media (max-width: 480px) {
-  .admin-panel h2 {
-    font-size: 2em;
+  .admin-header .main-title {
+    font-size: 2rem;
   }
   
-  .admin-section h3 {
-    font-size: 1.3em;
+  .content-section {
+    padding: 1rem;
   }
   
-  .edit-options {
-    max-width: 180px;
-  }
-  
-  .url-input, .music-input, .timeline-input {
-    font-size: 0.9em;
+  .media-grid {
+    grid-template-columns: 1fr;
   }
 } 
