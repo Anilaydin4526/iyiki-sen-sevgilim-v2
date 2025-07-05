@@ -31,4 +31,10 @@
   margin-top: 1.2rem;
   color: #7b1fa2;
   font-size: 1.2rem;
+}
+.quiz-question p {
+  color: #b31217;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
 } 

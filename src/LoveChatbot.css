@@ -36,6 +36,11 @@
   color: #fff;
   margin-right: auto;
 }
+.chatbot-msg.bot, .chatbot-msg.user {
+  color: #b31217 !important;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  background: #fff6fa;
+}
 .chatbot-input-row {
   display: flex;
   gap: 0.5rem;

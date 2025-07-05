@@ -41,4 +41,8 @@
 .timeline-content {
   flex: 1;
   text-align: left;
+}
+.timeline-content h3, .timeline-content p {
+  color: #b31217;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
 } 

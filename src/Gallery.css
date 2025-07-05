@@ -38,3 +38,9 @@
   max-width: 140px;
   border-radius: 8px;
 }
+.gallery-item figcaption, .gallery-item .gallery-alt, .gallery-item p {
+  color: #b31217;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  margin-top: 0.5rem;
+  text-align: center;
+}
