@@ -17,6 +17,7 @@ function AdminPanel() {
   const [error, setError] = useState('');
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [uploadStatus, setUploadStatus] = useState({});
   const { content, updateContent } = useContent();
 
   const handleLogin = () => {
@@ -52,45 +53,78 @@ function AdminPanel() {
   const handleFileUpload = async (event, field, type = 'auto') => {
     const file = event.target.files[0];
     if (file) {
-      const url = await uploadToCloudinary(file);
-      if (content) {
-        const newContent = { ...content };
-        // timeline.gallery.music gibi alanlar için dinamik güncelleme
-        const fieldParts = field.split('.');
-        if (fieldParts.length === 3) {
-          // Örn: timeline.0.media.src
-          const [parent, idx, subfield] = fieldParts;
-          if (Array.isArray(newContent[parent])) {
-            const arr = [...newContent[parent]];
-            if (subfield === 'media.src') {
-              arr[Number(idx)] = {
-                ...arr[Number(idx)],
-                media: { ...arr[Number(idx)].media, src: url }
-              };
-            } else {
-              arr[Number(idx)] = {
-                ...arr[Number(idx)],
-                [subfield]: url
-              };
+      try {
+        // Yükleme durumunu güncelle
+        setUploadStatus(prev => ({ ...prev, [field]: 'Yükleniyor...' }));
+        
+        const url = await uploadToCloudinary(file);
+        
+        if (content) {
+          const newContent = { ...content };
+          // timeline.gallery.music gibi alanlar için dinamik güncelleme
+          const fieldParts = field.split('.');
+          if (fieldParts.length === 3) {
+            // Örn: timeline.0.media.src
+            const [parent, idx, subfield] = fieldParts;
+            if (Array.isArray(newContent[parent])) {
+              const arr = [...newContent[parent]];
+              if (subfield === 'media.src') {
+                arr[Number(idx)] = {
+                  ...arr[Number(idx)],
+                  media: { ...arr[Number(idx)].media, src: url }
+                };
+              } else {
+                arr[Number(idx)] = {
+                  ...arr[Number(idx)],
+                  [subfield]: url
+                };
+              }
+              newContent[parent] = arr;
             }
-            newContent[parent] = arr;
+          } else if (fieldParts.length === 2) {
+            // Örn: gallery.0.src veya music.0.src
+            const [parent, idx] = fieldParts;
+            if (Array.isArray(newContent[parent])) {
+              const arr = [...newContent[parent]];
+              arr[Number(idx)] = {
+                ...arr[Number(idx)],
+                src: url
+              };
+              newContent[parent] = arr;
+            }
+          } else {
+            // Tek alan
+            newContent[field] = url;
           }
-        } else if (fieldParts.length === 2) {
-          // Örn: gallery.0.src veya music.0.src
-          const [parent, idx] = fieldParts;
-          if (Array.isArray(newContent[parent])) {
-            const arr = [...newContent[parent]];
-            arr[Number(idx)] = {
-              ...arr[Number(idx)],
-              src: url
-            };
-            newContent[parent] = arr;
-          }
-        } else {
-          // Tek alan
-          newContent[field] = url;
+          await updateContent(newContent);
+          
+          // Başarı durumunu güncelle
+          setUploadStatus(prev => ({ ...prev, [field]: 'Başarıyla yüklendi!' }));
+          
+          // 3 saniye sonra durum mesajını temizle
+          setTimeout(() => {
+            setUploadStatus(prev => {
+              const newStatus = { ...prev };
+              delete newStatus[field];
+              return newStatus;
+            });
+          }, 3000);
         }
-        await updateContent(newContent);
+      } catch (error) {
+        console.error('Dosya yükleme hatası:', error);
+        setUploadStatus(prev => ({ ...prev, [field]: `Hata: ${error.message}` }));
+        
+        // 5 saniye sonra hata mesajını temizle
+        setTimeout(() => {
+          setUploadStatus(prev => {
+            const newStatus = { ...prev };
+            delete newStatus[field];
+            return newStatus;
+          });
+        }, 5000);
+      } finally {
+        // Input'u sıfırla
+        event.target.value = '';
       }
     }
   };
@@ -193,6 +227,15 @@ function AdminPanel() {
         <Timeline />
         <div className="admin-controls">
           <h3>Zaman Tüneli Düzenle</h3>
+          <div className="upload-info">
+            <p>💡 <strong>Dosya Yükleme Bilgisi:</strong></p>
+            <ul>
+              <li>Desteklenen formatlar: JPG, PNG, GIF, WebP, MP4, WebM, OGG, MP3, WAV</li>
+              <li>Maksimum dosya boyutu: 10MB</li>
+              <li>Dosyalar Cloudinary'ye yüklenir ve kalıcı olarak saklanır</li>
+              <li>Yükleme başarısız olursa dosya geçici olarak tarayıcıda saklanır</li>
+            </ul>
+          </div>
           <div className="admin-timeline-controls">
             {Array.isArray(content.timeline) && content.timeline.map((item, index) => (
               <div key={index} className="admin-timeline-item">
@@ -243,6 +286,11 @@ function AdminPanel() {
                     accept="image/*,video/*"
                     onChange={(e) => handleFileUpload(e, `timeline.${index}.media.src`)}
                   />
+                  {uploadStatus[`timeline.${index}.media.src`] && (
+                    <div className={`upload-status ${uploadStatus[`timeline.${index}.media.src`].startsWith('Hata') ? 'upload-error' : ''}`}>
+                      {uploadStatus[`timeline.${index}.media.src`]}
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => {
@@ -279,6 +327,15 @@ function AdminPanel() {
         <Gallery />
         <div className="admin-controls">
           <h3>Galeri Düzenle</h3>
+          <div className="upload-info">
+            <p>💡 <strong>Dosya Yükleme Bilgisi:</strong></p>
+            <ul>
+              <li>Desteklenen formatlar: JPG, PNG, GIF, WebP, MP4, WebM, OGG</li>
+              <li>Maksimum dosya boyutu: 10MB</li>
+              <li>Dosyalar Cloudinary'ye yüklenir ve kalıcı olarak saklanır</li>
+              <li>Yükleme başarısız olursa dosya geçici olarak tarayıcıda saklanır</li>
+            </ul>
+          </div>
           <div className="admin-gallery-controls">
             {Array.isArray(content.gallery) && content.gallery.map((item, index) => (
               <div key={index} className="admin-gallery-item">
@@ -308,6 +365,11 @@ function AdminPanel() {
                   accept={item.type === 'image' ? 'image/*' : 'video/*'}
                   onChange={(e) => handleFileUpload(e, `gallery.${index}`)}
                 />
+                {uploadStatus[`gallery.${index}`] && (
+                  <div className={`upload-status ${uploadStatus[`gallery.${index}`].startsWith('Hata') ? 'upload-error' : ''}`}>
+                    {uploadStatus[`gallery.${index}`]}
+                  </div>
+                )}
                 <input
                   type="text"
                   placeholder="Açıklama"
@@ -352,6 +414,15 @@ function AdminPanel() {
         <MusicPlayer />
         <div className="admin-controls">
           <h3>Müzik Düzenle</h3>
+          <div className="upload-info">
+            <p>💡 <strong>Dosya Yükleme Bilgisi:</strong></p>
+            <ul>
+              <li>Desteklenen formatlar: MP3, WAV, OGG</li>
+              <li>Maksimum dosya boyutu: 10MB</li>
+              <li>Dosyalar Cloudinary'ye yüklenir ve kalıcı olarak saklanır</li>
+              <li>Yükleme başarısız olursa dosya geçici olarak tarayıcıda saklanır</li>
+            </ul>
+          </div>
           <div className="admin-music-controls">
             {Array.isArray(content.music) && content.music.map((item, index) => (
               <div key={index} className="admin-music-item">
@@ -390,6 +461,11 @@ function AdminPanel() {
                   accept="audio/*"
                   onChange={(e) => handleFileUpload(e, `music.${index}`)}
                 />
+                {uploadStatus[`music.${index}`] && (
+                  <div className={`upload-status ${uploadStatus[`music.${index}`].startsWith('Hata') ? 'upload-error' : ''}`}>
+                    {uploadStatus[`music.${index}`]}
+                  </div>
+                )}
                 <button
                   onClick={() => {
                     const newMusic = content.music.filter((_, i) => i !== index);

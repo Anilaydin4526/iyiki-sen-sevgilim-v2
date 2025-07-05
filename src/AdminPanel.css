@@ -85,7 +85,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr auto;
   gap: 10px;
-  align-items: center;
+  align-items: start;
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -114,8 +114,61 @@
 }
 
 .media-upload input[type="file"] {
-  padding: 5px;
+  padding: 8px 12px;
   font-size: 12px;
+  border: 2px dashed #ff6b6b;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.media-upload input[type="file"]:hover {
+  border-color: #ff4757;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.media-upload input[type="file"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Yükleme durumu için stil */
+.upload-status {
+  font-size: 12px;
+  color: #4CAF50;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.upload-error {
+  color: #f44336;
+}
+
+/* Upload info box */
+.upload-info {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.upload-info p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+.upload-info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.upload-info li {
+  margin: 5px 0;
+  font-size: 14px;
 }
 
 /* Gallery Controls */
@@ -129,7 +182,7 @@
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 1fr auto;
   gap: 10px;
-  align-items: center;
+  align-items: start;
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -157,7 +210,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 2fr 1fr auto;
   gap: 10px;
-  align-items: center;
+  align-items: start;
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
