@@ -174,7 +174,7 @@ function AdminPanel() {
               </div>
             ) : (
               <span onClick={() => handleEdit('welcomeMessage', content.welcomeMessage)}>
-                {content.welcomeMessage.split('\n').map((line, i) => (
+                {(content.welcomeMessage || "").split('\n').map((line, i) => (
                   <span key={i}>
                     {line}<br />
                   </span>
