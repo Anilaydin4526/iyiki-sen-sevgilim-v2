@@ -1,11 +1,23 @@
-import { useContent } from './utils/ContentContext';
+import { useEffect, useState, useRef } from 'react';
 import './MusicPlayer.css';
 
+const defaultPlaylist = [
+  {
+    title: 'Sonsuza Dek',
+    artist: 'Aşkımızın Şarkısı',
+    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  },
+];
+
 function MusicPlayer() {
-  const { content } = useContent();
-  const playlist = content?.music || [];
-  const [current, setCurrent] = React.useState(0);
-  const audioRef = React.useRef(null);
+  const [playlist, setPlaylist] = useState(defaultPlaylist);
+  const [current, setCurrent] = useState(0);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('musicData');
+    if (stored) setPlaylist(JSON.parse(stored));
+  }, []);
 
   const playNext = () => setCurrent((prev) => (prev + 1) % playlist.length);
   const playPrev = () => setCurrent((prev) => (prev - 1 + playlist.length) % playlist.length);

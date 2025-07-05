@@ -22,16 +22,7 @@
       "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     }
   ],
-  "timeline": [
-    {
-      "date": "2024-01-01",
-      "title": "İlk Buluşma",
-      "description": "Birlikte ilk defa buluştuk.",
-      "media": {
-        "type": "image",
-        "src": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80",
-        "alt": "İlk buluşma fotoğrafı"
-      }
-    }
-  ]
-} 
+  "timeline": {
+    "0": "blob:http://localhost:5173/87b14087-f288-41ff-977f-b5e91ff4dc39"
+  }
+}

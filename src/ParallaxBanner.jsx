@@ -1,10 +1,10 @@
 import './ParallaxBanner.css';
 
-function ParallaxBanner({ bannerText }) {
+function ParallaxBanner() {
   return (
     <div className="parallax-banner">
       <div className="parallax-content">
-        <h2>{bannerText}</h2>
+        <h2>Birlikte her an, sonsuz bir masal gibi...</h2>
       </div>
     </div>
   );
