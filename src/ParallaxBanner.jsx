@@ -1,3 +1,4 @@
+import React from "react";
 import './ParallaxBanner.css';
 
 function ParallaxBanner() {
