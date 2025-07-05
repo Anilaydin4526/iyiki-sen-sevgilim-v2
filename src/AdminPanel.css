@@ -325,4 +325,72 @@
   .edit-textarea-large {
     font-size: 14px;
   }
+}
+
+.admin-section h2,
+.admin-controls h3,
+.admin-timeline-item input[type="text"],
+.admin-timeline-item textarea,
+.admin-timeline-item .media-upload input[type="text"],
+.admin-gallery-item input[type="text"],
+.admin-gallery-item textarea,
+.admin-gallery-item select,
+.admin-music-item input[type="text"],
+.admin-music-item textarea {
+  color: #b31217 !important;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive !important;
+}
+
+/* Admin paneldeki input ve textarea placeholderlarını da kırmızı yap */
+.admin-timeline-item input[type="text"]::placeholder,
+.admin-timeline-item textarea::placeholder,
+.admin-gallery-item input[type="text"]::placeholder,
+.admin-gallery-item textarea::placeholder,
+.admin-music-item input[type="text"]::placeholder,
+.admin-music-item textarea::placeholder {
+  color: #b31217a0;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+}
+
+.admin-datepicker {
+  color: #b31217 !important;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive !important;
+  background: rgba(255,255,255,0.95);
+  border: 2px solid #b31217;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.admin-datepicker::placeholder {
+  color: #b31217a0;
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: 'Segoe Script', 'Comic Sans MS', cursive;
+  border-radius: 12px;
+  border: 2px solid #b31217;
+  box-shadow: 0 4px 24px #b3121711;
+}
+
+.react-datepicker__header {
+  background: #fff6fa;
+  border-bottom: 1px solid #b31217;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+  background: #b31217;
+  color: #fff;
+}
+
+.react-datepicker__day--today {
+  color: #b31217;
+  font-weight: bold;
 } 

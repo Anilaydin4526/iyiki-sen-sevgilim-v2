@@ -7,6 +7,9 @@ import MusicPlayer from './MusicPlayer';
 import LoveQuiz from './LoveQuiz';
 import LoveChatbot from './LoveChatbot';
 import { uploadToCloudinary } from './utils/uploadToCloudinary';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { tr } from 'date-fns/locale';
 import './AdminPanel.css';
 
 const password = 'iyikisen2024';
@@ -239,14 +242,22 @@ function AdminPanel() {
           <div className="admin-timeline-controls">
             {Array.isArray(content.timeline) && content.timeline.map((item, index) => (
               <div key={index} className="admin-timeline-item">
-                <input
-                  type="date"
-                  value={item.date}
-                  onChange={(e) => {
+                <ReactDatePicker
+                  selected={item.date ? new Date(item.date) : null}
+                  onChange={date => {
                     const newTimeline = [...content.timeline];
-                    newTimeline[index] = { ...item, date: e.target.value };
+                    newTimeline[index] = { ...item, date: date ? date.toISOString().slice(0, 10) : '' };
                     updateContent({ ...content, timeline: newTimeline });
                   }}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Tarih seç..."
+                  locale={tr}
+                  className="admin-datepicker"
+                  calendarStartDay={1}
+                  isClearable
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={100}
                 />
                 <input
                   type="text"
