@@ -1,3 +1,4 @@
+import React from "react";
 import { useContent } from './utils/ContentContext';
 import './MusicPlayer.css';
 
