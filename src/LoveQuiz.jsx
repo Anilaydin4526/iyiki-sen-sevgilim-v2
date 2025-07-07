@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useContent } from './utils/ContentContext';
 import './LoveQuiz.css';
 
 const defaultQuestions = [
@@ -10,15 +11,19 @@ const defaultQuestions = [
 ];
 
 function LoveQuiz() {
-  const [questions, setQuestions] = useState(defaultQuestions);
+  const { content } = useContent();
+  const questions = (content && Array.isArray(content.quiz) && content.quiz.length > 0)
+    ? content.quiz
+    : defaultQuestions;
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('quizData');
-    if (stored) setQuestions(JSON.parse(stored));
-  }, []);
+    setStep(0);
+    setScore(0);
+    setShowResult(false);
+  }, [questions]);
 
   const handleOption = (idx) => {
     if (idx === questions[step].answer) setScore(score + 1);
@@ -26,7 +31,7 @@ function LoveQuiz() {
     else setShowResult(true);
   };
 
-  if (questions.length === 0) return null;
+  if (!questions || questions.length === 0) return null;
 
   return (
     <div className="quiz-container">

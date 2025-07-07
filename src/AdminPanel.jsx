@@ -25,12 +25,20 @@ function AdminPanel() {
   const [timelineDraft, setTimelineDraft] = useState([]);
   const [galleryDraft, setGalleryDraft] = useState([]);
   const [musicDraft, setMusicDraft] = useState([]);
+  const [quizDraft, setQuizDraft] = useState([]);
 
   useEffect(() => {
     if (content) {
       setTimelineDraft(content.timeline || []);
       setGalleryDraft(content.gallery || []);
       setMusicDraft(content.music || []);
+      setQuizDraft(content.quiz || [
+        {
+          question: '',
+          options: ['', '', '', ''],
+          answer: 0,
+        },
+      ]);
     }
   }, [content]);
 
@@ -543,6 +551,88 @@ function AdminPanel() {
             </button>
             <button
               onClick={() => updateContent({ ...content, music: musicDraft })}
+              className="add-btn"
+              style={{ background: '#388e3c', marginTop: 10 }}
+            >
+              Kaydet
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Quiz Section with Admin Controls */}
+      <div className="admin-section">
+        <h2>Aşk Testi</h2>
+        <div className="admin-controls">
+          <h3>Aşk Testi Düzenle</h3>
+          <div className="admin-quiz-controls">
+            {Array.isArray(quizDraft) && quizDraft.map((item, qIdx) => (
+              <div key={qIdx} className="admin-quiz-item">
+                <input
+                  type="text"
+                  placeholder="Soru"
+                  value={item.question}
+                  onChange={e => {
+                    const newQuiz = [...quizDraft];
+                    newQuiz[qIdx] = { ...item, question: e.target.value };
+                    setQuizDraft(newQuiz);
+                  }}
+                />
+                {item.options.map((opt, oIdx) => (
+                  <div key={oIdx} style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+                    <input
+                      type="text"
+                      placeholder={`Seçenek ${oIdx + 1}`}
+                      value={opt}
+                      onChange={e => {
+                        const newQuiz = [...quizDraft];
+                        const newOptions = [...item.options];
+                        newOptions[oIdx] = e.target.value;
+                        newQuiz[qIdx] = { ...item, options: newOptions };
+                        setQuizDraft(newQuiz);
+                      }}
+                      style={{ flex: 1 }}
+                    />
+                    <input
+                      type="radio"
+                      name={`answer-${qIdx}`}
+                      checked={item.answer === oIdx}
+                      onChange={() => {
+                        const newQuiz = [...quizDraft];
+                        newQuiz[qIdx] = { ...item, answer: oIdx };
+                        setQuizDraft(newQuiz);
+                      }}
+                      style={{ marginLeft: 8 }}
+                    />
+                    <span style={{ marginLeft: 4, fontSize: 12 }}>Doğru</span>
+                  </div>
+                ))}
+                <button
+                  onClick={() => {
+                    const newQuiz = quizDraft.filter((_, i) => i !== qIdx);
+                    setQuizDraft(newQuiz);
+                  }}
+                  className="delete-btn"
+                >
+                  Sil
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                const newQuiz = [...(quizDraft || []), {
+                  question: '',
+                  options: ['', '', '', ''],
+                  answer: 0
+                }];
+                setQuizDraft(newQuiz);
+              }}
+              className="add-btn"
+            >
+              Yeni Soru Ekle
+            </button>
+            <button
+              onClick={() => updateContent({ ...content, quiz: quizDraft })}
               className="add-btn"
               style={{ background: '#388e3c', marginTop: 10 }}
             >
