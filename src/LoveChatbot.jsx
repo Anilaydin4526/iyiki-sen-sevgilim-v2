@@ -3,7 +3,7 @@ import './LoveChatbot.css';
 import axios from 'axios';
 
 const GEMINI_API_KEY = 'AIzaSyCkU66GIIV-9W6UdNvTvgzr_01m2D0HuCI';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + GEMINI_API_KEY;
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 function LoveChatbot() {
   const [messages, setMessages] = useState([
@@ -13,6 +13,15 @@ function LoveChatbot() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Sohbet geçmişini Gemini API formatına çevir
+  const getGeminiHistory = () => {
+    // İlk bot mesajını dahil etme, sadece user ve bot mesajlarını sırayla gönder
+    return messages.slice(1).map(msg => ({
+      parts: [{ text: msg.text }],
+      role: msg.from === 'user' ? 'user' : 'model'
+    }));
+  };
+
   const sendMessage = async () => {
     if (!input.trim()) return;
     setMessages([...messages, { from: 'user', text: input }]);
@@ -20,8 +29,17 @@ function LoveChatbot() {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(GEMINI_API_URL, {
-        contents: [{ role: 'user', parts: [{ text: input }] }]
+      const payload = {
+        contents: [
+          ...getGeminiHistory(),
+          { role: 'user', parts: [{ text: input }] }
+        ]
+      };
+      const res = await axios.post(GEMINI_API_URL, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GEMINI_API_KEY
+        }
       });
       const geminiReply = res.data.candidates?.[0]?.content?.parts?.[0]?.text || 'Cevap alınamadı.';
       setMessages(msgs => [...msgs, { from: 'bot', text: geminiReply }]);
