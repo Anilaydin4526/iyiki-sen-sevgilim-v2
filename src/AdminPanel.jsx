@@ -99,8 +99,9 @@ function AdminPanel() {
               media: { ...newTimeline[idx].media, src: url }
             };
             setTimelineDraft(newTimeline);
-          } else if (fieldParts.length === 3) {
-            // timeline.0.media.src gibi alanlar için
+          } else if (fieldParts.length === 3 && fieldParts[0] !== 'timeline' && fieldParts[0] !== 'gallery') {
+            // Sadece diğer alanlar için eski newContent kodu
+            const newContent = { ...content };
             const [parent, idx, subfield] = fieldParts;
             if (Array.isArray(newContent[parent])) {
               const arr = [...newContent[parent]];
