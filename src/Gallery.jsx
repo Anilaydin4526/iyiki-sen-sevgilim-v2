@@ -20,6 +20,7 @@ function Gallery() {
                 Tarayıcınız video etiketini desteklemiyor.
               </video>
             )}
+            {item.alt && <div className="gallery-alt">{item.alt}</div>}
           </div>
         ))}
       </div>
