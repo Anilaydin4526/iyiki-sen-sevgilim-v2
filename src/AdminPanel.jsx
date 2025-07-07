@@ -12,7 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { tr } from 'date-fns/locale';
 import './AdminPanel.css';
 
-const password = 'iyikisen2024';
+const password = '1';
 
 function AdminPanel() {
   const [step, setStep] = useState('login');
