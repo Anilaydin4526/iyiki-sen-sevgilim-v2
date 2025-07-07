@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useContent } from './utils/ContentContext';
 import ParallaxBanner from './ParallaxBanner';
 import Timeline from './Timeline';
@@ -15,7 +15,7 @@ import './AdminPanel.css';
 const password = '1';
 
 function AdminPanel() {
-  const [step, setStep] = useState('login');
+  const [step, setStep] = useState(() => localStorage.getItem('adminStep') || 'login');
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [editingField, setEditingField] = useState(null);
@@ -23,13 +23,25 @@ function AdminPanel() {
   const [uploadStatus, setUploadStatus] = useState({});
   const { content, updateContent } = useContent();
 
+  useEffect(() => {
+    const savedStep = localStorage.getItem('adminStep');
+    if (savedStep) setStep(savedStep);
+  }, []);
+
   const handleLogin = () => {
     if (input === password) {
       setStep('panel');
+      localStorage.setItem('adminStep', 'panel');
       setError('');
     } else {
       setError('Şifre yanlış!');
     }
+  };
+
+  const handleLogout = () => {
+    setStep('login');
+    localStorage.removeItem('adminStep');
+    setInput('');
   };
 
   const handleEdit = (field, value) => {
@@ -195,6 +207,7 @@ function AdminPanel() {
             )}
           </p>
         </center>
+        <button onClick={handleLogout} className="delete-btn" style={{ float: 'right', margin: '10px' }}>Çıkış Yap</button>
       </div>
       
       <div className="welcome-message">
