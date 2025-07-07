@@ -77,7 +77,6 @@ function AdminPanel() {
         setUploadStatus(prev => ({ ...prev, [field]: 'Yükleniyor...' }));
         const url = await uploadToCloudinary(file);
         if (content) {
-          const newContent = { ...content };
           const fieldParts = field.split('.');
           if (fieldParts.length === 2 && fieldParts[0] === 'gallery') {
             // Galeri için dosya tipi otomatik güncelle
@@ -91,6 +90,15 @@ function AdminPanel() {
               newGallery[idx] = { ...newGallery[idx], src: url };
             }
             setGalleryDraft(newGallery);
+          } else if (fieldParts.length === 3 && fieldParts[0] === 'timeline' && fieldParts[2] === 'media.src') {
+            // Zaman tüneli için doğrudan timelineDraft güncelle
+            const idx = Number(fieldParts[1]);
+            const newTimeline = [...timelineDraft];
+            newTimeline[idx] = {
+              ...newTimeline[idx],
+              media: { ...newTimeline[idx].media, src: url }
+            };
+            setTimelineDraft(newTimeline);
           } else if (fieldParts.length === 3) {
             // timeline.0.media.src gibi alanlar için
             const [parent, idx, subfield] = fieldParts;
@@ -318,6 +326,9 @@ function AdminPanel() {
                     </div>
                   )}
                 </div>
+                {item.media?.src && (
+                  <img src={item.media.src} alt="" style={{ height: 80, borderRadius: 8, marginRight: 8 }} />
+                )}
                 <button
                   onClick={() => {
                     const newTimeline = timelineDraft.filter((_, i) => i !== index);
