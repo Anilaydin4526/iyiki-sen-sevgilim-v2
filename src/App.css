@@ -67,3 +67,27 @@
   margin: 1.5rem auto;
   padding: 1rem;
 }
+
+.welcome-message {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+  padding: 1.5rem 1rem;
+  background: none;
+  display: block;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.welcome-message .main-title {
+  flex-wrap: wrap;
+  white-space: pre-line;
+  font-size: 1.5rem;
+  line-height: 2.2rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  margin: 0;
+}
