@@ -389,7 +389,14 @@ function AdminPanel() {
                 <input
                   type="file"
                   accept={item.type === 'image' ? 'image/*' : 'video/*'}
-                  onChange={(e) => handleFileUpload(e, `gallery.${index}`)}
+                  onChange={async (e) => {
+                    await handleFileUpload(e, `gallery.${index}`);
+                    // Dosya yüklendikten sonra inputa odaklan
+                    setTimeout(() => {
+                      const input = document.querySelector(`.admin-gallery-item:nth-child(${index + 1}) input[placeholder='Medya URL']`);
+                      if (input) input.focus();
+                    }, 100);
+                  }}
                 />
                 {uploadStatus[`gallery.${index}`] && (
                   <div className={`upload-status ${uploadStatus[`gallery.${index}`].startsWith('Hata') ? 'upload-error' : ''}`}>
