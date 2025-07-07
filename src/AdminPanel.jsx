@@ -297,7 +297,6 @@ function AdminPanel() {
                     accept="image/*,video/*"
                     onChange={async (e) => {
                       await handleFileUpload(e, `timeline.${index}.media.src`);
-                      // Dosya yüklendikten sonra inputa odaklan
                       setTimeout(() => {
                         const input = document.querySelector(`.admin-timeline-item:nth-child(${index + 1}) input[placeholder='Medya URL']`);
                         if (input) input.focus();
