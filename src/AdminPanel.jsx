@@ -15,7 +15,7 @@ import './AdminPanel.css';
 const password = '1';
 
 function AdminPanel() {
-  const [step, setStep] = useState(() => localStorage.getItem('adminStep') || 'login');
+  const [step, setStep] = useState('login');
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [editingField, setEditingField] = useState(null);
@@ -25,11 +25,6 @@ function AdminPanel() {
   const [timelineDraft, setTimelineDraft] = useState([]);
   const [galleryDraft, setGalleryDraft] = useState([]);
   const [musicDraft, setMusicDraft] = useState([]);
-
-  useEffect(() => {
-    const savedStep = localStorage.getItem('adminStep');
-    if (savedStep) setStep(savedStep);
-  }, []);
 
   useEffect(() => {
     if (content) {
@@ -42,7 +37,6 @@ function AdminPanel() {
   const handleLogin = () => {
     if (input === password) {
       setStep('panel');
-      localStorage.setItem('adminStep', 'panel');
       setError('');
     } else {
       setError('Şifre yanlış!');
@@ -51,7 +45,6 @@ function AdminPanel() {
 
   const handleLogout = () => {
     setStep('login');
-    localStorage.removeItem('adminStep');
     setInput('');
   };
 
@@ -80,17 +73,25 @@ function AdminPanel() {
     const file = event.target.files[0];
     if (file) {
       try {
-        // Yükleme durumunu güncelle
         setUploadStatus(prev => ({ ...prev, [field]: 'Yükleniyor...' }));
-        
         const url = await uploadToCloudinary(file);
-        
         if (content) {
           const newContent = { ...content };
-          // timeline.gallery.music gibi alanlar için dinamik güncelleme
           const fieldParts = field.split('.');
-          if (fieldParts.length === 3) {
-            // Örn: timeline.0.media.src
+          if (fieldParts.length === 2 && fieldParts[0] === 'gallery') {
+            // Galeri için dosya tipi otomatik güncelle
+            const idx = Number(fieldParts[1]);
+            const newGallery = [...galleryDraft];
+            if (file.type.startsWith('video/')) {
+              newGallery[idx] = { ...newGallery[idx], src: url, type: 'video' };
+            } else if (file.type.startsWith('image/')) {
+              newGallery[idx] = { ...newGallery[idx], src: url, type: 'image' };
+            } else {
+              newGallery[idx] = { ...newGallery[idx], src: url };
+            }
+            setGalleryDraft(newGallery);
+          } else if (fieldParts.length === 3) {
+            // timeline.0.media.src gibi alanlar için
             const [parent, idx, subfield] = fieldParts;
             if (Array.isArray(newContent[parent])) {
               const arr = [...newContent[parent]];
@@ -108,26 +109,13 @@ function AdminPanel() {
               newContent[parent] = arr;
             }
           } else if (fieldParts.length === 2) {
-            // Örn: gallery.0.src veya music.0.src
-            const [parent, idx] = fieldParts;
-            if (Array.isArray(newContent[parent])) {
-              const arr = [...newContent[parent]];
-              arr[Number(idx)] = {
-                ...arr[Number(idx)],
-                src: url
-              };
-              newContent[parent] = arr;
-            }
+            // music.0.src gibi alanlar için
+            newContent[field] = url;
           } else {
             // Tek alan
             newContent[field] = url;
           }
-          await updateContent(newContent);
-          
-          // Başarı durumunu güncelle
           setUploadStatus(prev => ({ ...prev, [field]: 'Başarıyla yüklendi!' }));
-          
-          // 3 saniye sonra durum mesajını temizle
           setTimeout(() => {
             setUploadStatus(prev => {
               const newStatus = { ...prev };
@@ -137,10 +125,7 @@ function AdminPanel() {
           }, 3000);
         }
       } catch (error) {
-        console.error('Dosya yükleme hatası:', error);
         setUploadStatus(prev => ({ ...prev, [field]: `Hata: ${error.message}` }));
-        
-        // 5 saniye sonra hata mesajını temizle
         setTimeout(() => {
           setUploadStatus(prev => {
             const newStatus = { ...prev };
@@ -149,7 +134,6 @@ function AdminPanel() {
           });
         }, 5000);
       } finally {
-        // Input'u sıfırla
         event.target.value = '';
       }
     }
