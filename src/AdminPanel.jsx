@@ -99,31 +99,14 @@ function AdminPanel() {
               media: { ...newTimeline[idx].media, src: url }
             };
             setTimelineDraft(newTimeline);
-          } else if (fieldParts.length === 3 && fieldParts[0] !== 'timeline' && fieldParts[0] !== 'gallery') {
-            // Sadece diğer alanlar için eski newContent kodu
+          } else if (fieldParts.length === 2 && fieldParts[0] !== 'gallery' && fieldParts[0] !== 'timeline') {
             const newContent = { ...content };
-            const [parent, idx, subfield] = fieldParts;
-            if (Array.isArray(newContent[parent])) {
-              const arr = [...newContent[parent]];
-              if (subfield === 'media.src') {
-                arr[Number(idx)] = {
-                  ...arr[Number(idx)],
-                  media: { ...arr[Number(idx)].media, src: url }
-                };
-              } else {
-                arr[Number(idx)] = {
-                  ...arr[Number(idx)],
-                  [subfield]: url
-                };
-              }
-              newContent[parent] = arr;
-            }
-          } else if (fieldParts.length === 2) {
-            // music.0.src gibi alanlar için
             newContent[field] = url;
-          } else {
-            // Tek alan
+            // updateContent(newContent); // Gerekirse
+          } else if (fieldParts.length === 1) {
+            const newContent = { ...content };
             newContent[field] = url;
+            // updateContent(newContent); // Gerekirse
           }
           setUploadStatus(prev => ({ ...prev, [field]: 'Başarıyla yüklendi!' }));
           setTimeout(() => {
