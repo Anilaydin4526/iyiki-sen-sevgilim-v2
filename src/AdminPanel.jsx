@@ -70,6 +70,7 @@ function AdminPanel() {
 
   // Cloudinary ile dosya yükleme
   const handleFileUpload = async (event, field, type = 'auto') => {
+    if (event.preventDefault) event.preventDefault();
     const file = event.target.files[0];
     if (file) {
       try {
@@ -302,6 +303,7 @@ function AdminPanel() {
                   <input
                     type="file"
                     accept="image/*,video/*"
+                    onClick={e => e.preventDefault()}
                     onChange={(e) => handleFileUpload(e, `timeline.${index}.media.src`)}
                   />
                   {uploadStatus[`timeline.${index}.media.src`] && (
@@ -388,6 +390,7 @@ function AdminPanel() {
                 <input
                   type="file"
                   accept={item.type === 'image' ? 'image/*' : 'video/*'}
+                  onClick={e => e.preventDefault()}
                   onChange={(e) => handleFileUpload(e, `gallery.${index}`)}
                 />
                 {uploadStatus[`gallery.${index}`] && (
@@ -491,6 +494,7 @@ function AdminPanel() {
                 <input
                   type="file"
                   accept="audio/*"
+                  onClick={e => e.preventDefault()}
                   onChange={(e) => handleFileUpload(e, `music.${index}`)}
                 />
                 {uploadStatus[`music.${index}`] && (
