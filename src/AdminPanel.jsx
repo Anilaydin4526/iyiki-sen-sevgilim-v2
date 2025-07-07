@@ -303,7 +303,14 @@ function AdminPanel() {
                   <input
                     type="file"
                     accept="image/*,video/*"
-                    onChange={(e) => handleFileUpload(e, `timeline.${index}.media.src`)}
+                    onChange={async (e) => {
+                      await handleFileUpload(e, `timeline.${index}.media.src`);
+                      // Dosya yüklendikten sonra inputa odaklan
+                      setTimeout(() => {
+                        const input = document.querySelector(`.admin-timeline-item:nth-child(${index + 1}) input[placeholder='Medya URL']`);
+                        if (input) input.focus();
+                      }, 100);
+                    }}
                   />
                   {uploadStatus[`timeline.${index}.media.src`] && (
                     <div className={`upload-status ${uploadStatus[`timeline.${index}.media.src`].startsWith('Hata') ? 'upload-error' : ''}`}>
