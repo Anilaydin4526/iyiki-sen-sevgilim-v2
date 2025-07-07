@@ -22,11 +22,22 @@ function AdminPanel() {
   const [editValue, setEditValue] = useState('');
   const [uploadStatus, setUploadStatus] = useState({});
   const { content, updateContent } = useContent();
+  const [timelineDraft, setTimelineDraft] = useState([]);
+  const [galleryDraft, setGalleryDraft] = useState([]);
+  const [musicDraft, setMusicDraft] = useState([]);
 
   useEffect(() => {
     const savedStep = localStorage.getItem('adminStep');
     if (savedStep) setStep(savedStep);
   }, []);
+
+  useEffect(() => {
+    if (content) {
+      setTimelineDraft(content.timeline || []);
+      setGalleryDraft(content.gallery || []);
+      setMusicDraft(content.music || []);
+    }
+  }, [content]);
 
   const handleLogin = () => {
     if (input === password) {
@@ -252,14 +263,14 @@ function AdminPanel() {
             </ul>
           </div>
           <div className="admin-timeline-controls">
-            {Array.isArray(content.timeline) && content.timeline.map((item, index) => (
+            {Array.isArray(timelineDraft) && timelineDraft.map((item, index) => (
               <div key={index} className="admin-timeline-item">
                 <ReactDatePicker
                   selected={item.date ? new Date(item.date) : null}
                   onChange={date => {
-                    const newTimeline = [...content.timeline];
+                    const newTimeline = [...timelineDraft];
                     newTimeline[index] = { ...item, date: date ? date.toISOString().slice(0, 10) : '' };
-                    updateContent({ ...content, timeline: newTimeline });
+                    setTimelineDraft(newTimeline);
                   }}
                   dateFormat="yyyy-MM-dd"
                   placeholderText="Tarih seç..."
@@ -275,19 +286,19 @@ function AdminPanel() {
                   type="text"
                   placeholder="Başlık"
                   value={item.title}
-                  onChange={(e) => {
-                    const newTimeline = [...content.timeline];
+                  onChange={e => {
+                    const newTimeline = [...timelineDraft];
                     newTimeline[index] = { ...item, title: e.target.value };
-                    updateContent({ ...content, timeline: newTimeline });
+                    setTimelineDraft(newTimeline);
                   }}
                 />
                 <textarea
                   placeholder="Açıklama"
                   value={item.description}
-                  onChange={(e) => {
-                    const newTimeline = [...content.timeline];
+                  onChange={e => {
+                    const newTimeline = [...timelineDraft];
                     newTimeline[index] = { ...item, description: e.target.value };
-                    updateContent({ ...content, timeline: newTimeline });
+                    setTimelineDraft(newTimeline);
                   }}
                 />
                 <div className="media-upload">
@@ -295,13 +306,13 @@ function AdminPanel() {
                     type="text"
                     placeholder="Medya URL"
                     value={item.media?.src || ''}
-                    onChange={(e) => {
-                      const newTimeline = [...content.timeline];
+                    onChange={e => {
+                      const newTimeline = [...timelineDraft];
                       newTimeline[index] = {
                         ...item,
                         media: { ...item.media, src: e.target.value }
                       };
-                      updateContent({ ...content, timeline: newTimeline });
+                      setTimelineDraft(newTimeline);
                     }}
                   />
                   <input
@@ -317,8 +328,8 @@ function AdminPanel() {
                 </div>
                 <button
                   onClick={() => {
-                    const newTimeline = content.timeline.filter((_, i) => i !== index);
-                    updateContent({ ...content, timeline: newTimeline });
+                    const newTimeline = timelineDraft.filter((_, i) => i !== index);
+                    setTimelineDraft(newTimeline);
                   }}
                   className="delete-btn"
                 >
@@ -328,17 +339,24 @@ function AdminPanel() {
             ))}
             <button
               onClick={() => {
-                const newTimeline = [...(content.timeline || []), {
+                const newTimeline = [...(timelineDraft || []), {
                   date: '',
                   title: '',
                   description: '',
                   media: { type: 'image', src: '', alt: '' }
                 }];
-                updateContent({ ...content, timeline: newTimeline });
+                setTimelineDraft(newTimeline);
               }}
               className="add-btn"
             >
               Yeni Zaman Tüneli Ekle
+            </button>
+            <button
+              onClick={() => updateContent({ ...content, timeline: timelineDraft })}
+              className="add-btn"
+              style={{ background: '#388e3c', marginTop: 10 }}
+            >
+              Kaydet
             </button>
           </div>
         </div>
@@ -360,14 +378,14 @@ function AdminPanel() {
             </ul>
           </div>
           <div className="admin-gallery-controls">
-            {Array.isArray(content.gallery) && content.gallery.map((item, index) => (
+            {Array.isArray(galleryDraft) && galleryDraft.map((item, index) => (
               <div key={index} className="admin-gallery-item">
                 <select
                   value={item.type}
                   onChange={(e) => {
-                    const newGallery = [...content.gallery];
+                    const newGallery = [...galleryDraft];
                     newGallery[index] = { ...item, type: e.target.value };
-                    updateContent({ ...content, gallery: newGallery });
+                    setGalleryDraft(newGallery);
                   }}
                 >
                   <option value="image">Fotoğraf</option>
@@ -378,9 +396,9 @@ function AdminPanel() {
                   placeholder="Medya URL"
                   value={item.src}
                   onChange={(e) => {
-                    const newGallery = [...content.gallery];
+                    const newGallery = [...galleryDraft];
                     newGallery[index] = { ...item, src: e.target.value };
-                    updateContent({ ...content, gallery: newGallery });
+                    setGalleryDraft(newGallery);
                   }}
                 />
                 <input
@@ -398,15 +416,15 @@ function AdminPanel() {
                   placeholder="Açıklama"
                   value={item.alt}
                   onChange={(e) => {
-                    const newGallery = [...content.gallery];
+                    const newGallery = [...galleryDraft];
                     newGallery[index] = { ...item, alt: e.target.value };
-                    updateContent({ ...content, gallery: newGallery });
+                    setGalleryDraft(newGallery);
                   }}
                 />
                 <button
                   onClick={() => {
-                    const newGallery = content.gallery.filter((_, i) => i !== index);
-                    updateContent({ ...content, gallery: newGallery });
+                    const newGallery = galleryDraft.filter((_, i) => i !== index);
+                    setGalleryDraft(newGallery);
                   }}
                   className="delete-btn"
                 >
@@ -416,16 +434,23 @@ function AdminPanel() {
             ))}
             <button
               onClick={() => {
-                const newGallery = [...(content.gallery || []), {
+                const newGallery = [...(galleryDraft || []), {
                   type: 'image',
                   src: '',
                   alt: ''
                 }];
-                updateContent({ ...content, gallery: newGallery });
+                setGalleryDraft(newGallery);
               }}
               className="add-btn"
             >
               Yeni Galeri Öğesi Ekle
+            </button>
+            <button
+              onClick={() => updateContent({ ...content, gallery: galleryDraft })}
+              className="add-btn"
+              style={{ background: '#388e3c', marginTop: 10 }}
+            >
+              Kaydet
             </button>
           </div>
         </div>
@@ -447,16 +472,16 @@ function AdminPanel() {
             </ul>
           </div>
           <div className="admin-music-controls">
-            {Array.isArray(content.music) && content.music.map((item, index) => (
+            {Array.isArray(musicDraft) && musicDraft.map((item, index) => (
               <div key={index} className="admin-music-item">
                 <input
                   type="text"
                   placeholder="Şarkı Adı"
                   value={item.title}
                   onChange={(e) => {
-                    const newMusic = [...content.music];
+                    const newMusic = [...musicDraft];
                     newMusic[index] = { ...item, title: e.target.value };
-                    updateContent({ ...content, music: newMusic });
+                    setMusicDraft(newMusic);
                   }}
                 />
                 <input
@@ -464,9 +489,9 @@ function AdminPanel() {
                   placeholder="Sanatçı"
                   value={item.artist}
                   onChange={(e) => {
-                    const newMusic = [...content.music];
+                    const newMusic = [...musicDraft];
                     newMusic[index] = { ...item, artist: e.target.value };
-                    updateContent({ ...content, music: newMusic });
+                    setMusicDraft(newMusic);
                   }}
                 />
                 <input
@@ -474,9 +499,9 @@ function AdminPanel() {
                   placeholder="Müzik URL"
                   value={item.src}
                   onChange={(e) => {
-                    const newMusic = [...content.music];
+                    const newMusic = [...musicDraft];
                     newMusic[index] = { ...item, src: e.target.value };
-                    updateContent({ ...content, music: newMusic });
+                    setMusicDraft(newMusic);
                   }}
                 />
                 <input
@@ -491,8 +516,8 @@ function AdminPanel() {
                 )}
                 <button
                   onClick={() => {
-                    const newMusic = content.music.filter((_, i) => i !== index);
-                    updateContent({ ...content, music: newMusic });
+                    const newMusic = musicDraft.filter((_, i) => i !== index);
+                    setMusicDraft(newMusic);
                   }}
                   className="delete-btn"
                 >
@@ -502,16 +527,23 @@ function AdminPanel() {
             ))}
             <button
               onClick={() => {
-                const newMusic = [...(content.music || []), {
+                const newMusic = [...(musicDraft || []), {
                   title: '',
                   artist: '',
                   src: ''
                 }];
-                updateContent({ ...content, music: newMusic });
+                setMusicDraft(newMusic);
               }}
               className="add-btn"
             >
               Yeni Müzik Ekle
+            </button>
+            <button
+              onClick={() => updateContent({ ...content, music: musicDraft })}
+              className="add-btn"
+              style={{ background: '#388e3c', marginTop: 10 }}
+            >
+              Kaydet
             </button>
           </div>
         </div>
