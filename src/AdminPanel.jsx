@@ -177,7 +177,6 @@ function AdminPanel() {
                   type="text"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  onBlur={handleSave}
                   onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                   className="edit-input"
                 />
@@ -196,7 +195,7 @@ function AdminPanel() {
                 <textarea
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  onBlur={handleSave}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                   className="edit-textarea"
                 />
               </div>
@@ -218,7 +217,7 @@ function AdminPanel() {
                 <textarea
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  onBlur={handleSave}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                   className="edit-textarea-large"
                 />
               </div>
