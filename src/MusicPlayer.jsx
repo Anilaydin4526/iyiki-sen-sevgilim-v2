@@ -20,14 +20,28 @@ function MusicPlayer() {
         <span className="music-song">{playlist[current].title}</span>
         <span className="music-artist">{playlist[current].artist}</span>
       </div>
-      <audio
-        ref={audioRef}
-        src={playlist[current].src}
-        controls
-        autoPlay
-        onEnded={playNext}
-        className="music-audio"
-      />
+      {playlist[current].youtubeUrl ? (
+        <div className="music-youtube-embed">
+          <iframe
+            width="320"
+            height="180"
+            src={`https://www.youtube.com/embed/${playlist[current].youtubeUrl.split('v=')[1]?.split('&')[0] || ''}`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      ) : (
+        <audio
+          ref={audioRef}
+          src={playlist[current].src}
+          controls
+          autoPlay
+          onEnded={playNext}
+          className="music-audio"
+        />
+      )}
       <div className="music-controls">
         <button onClick={playPrev}>&lt;&lt; Önceki</button>
         <button onClick={playNext}>Sonraki &gt;&gt;</button>

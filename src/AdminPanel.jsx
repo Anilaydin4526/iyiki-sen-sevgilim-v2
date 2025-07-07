@@ -498,6 +498,16 @@ function AdminPanel() {
                   }}
                 />
                 <input
+                  type="text"
+                  placeholder="YouTube URL (isteğe bağlı)"
+                  value={item.youtubeUrl || ''}
+                  onChange={(e) => {
+                    const newMusic = [...musicDraft];
+                    newMusic[index] = { ...item, youtubeUrl: e.target.value };
+                    setMusicDraft(newMusic);
+                  }}
+                />
+                <input
                   type="file"
                   accept="audio/*"
                   onChange={(e) => handleFileUpload(e, `music.${index}`)}
