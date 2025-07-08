@@ -99,14 +99,22 @@ function AdminPanel() {
             }
             setGalleryDraft(newGallery);
           } else if (fieldParts.length === 3 && fieldParts[0] === 'timeline' && fieldParts[2] === 'media.src') {
-            // Zaman tüneli için doğrudan timelineDraft güncelle
+            // Zaman tüneli için dosya tipi otomatik güncelle (galeri ve müzik ile aynı mantık)
             const idx = Number(fieldParts[1]);
-            const newTimeline = [...timelineDraft];
-            newTimeline[idx] = {
-              ...newTimeline[idx],
-              media: { ...newTimeline[idx].media, src: url }
-            };
-            setTimelineDraft(newTimeline);
+            setTimelineDraft(prev => {
+              const newTimeline = [...prev];
+              newTimeline[idx] = {
+                ...newTimeline[idx],
+                media: { ...(newTimeline[idx].media || {}), src: url }
+              };
+              return newTimeline;
+            });
+          } else if (fieldParts.length === 2 && fieldParts[0] === 'music') {
+            // Müzik için dosya yüklenince src alanını güncelle
+            const idx = Number(fieldParts[1]);
+            const newMusic = [...musicDraft];
+            newMusic[idx] = { ...newMusic[idx], src: url };
+            setMusicDraft(newMusic);
           } else if (fieldParts.length === 2 && fieldParts[0] !== 'gallery' && fieldParts[0] !== 'timeline') {
             const newContent = { ...content };
             newContent[field] = url;
@@ -137,6 +145,36 @@ function AdminPanel() {
       } finally {
         event.target.value = '';
       }
+    }
+  };
+
+  // Cloudinary ile zaman tüneli dosya yükleme (sade ve hatasız)
+  const handleTimelineFileUpload = async (event, index) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      setUploadStatus(prev => ({ ...prev, [`timeline.${index}.media.src`]: 'Yükleniyor...' }));
+      const url = await uploadToCloudinary(file);
+      setTimelineDraft(prev => {
+        const newTimeline = [...prev];
+        newTimeline[index] = {
+          ...newTimeline[index],
+          media: { ...(newTimeline[index]?.media || {}), src: url }
+        };
+        return newTimeline;
+      });
+      setUploadStatus(prev => ({ ...prev, [`timeline.${index}.media.src`]: 'Başarıyla yüklendi!' }));
+    } catch (error) {
+      setUploadStatus(prev => ({ ...prev, [`timeline.${index}.media.src`]: `Hata: ${error.message}` }));
+    } finally {
+      event.target.value = '';
+      setTimeout(() => {
+        setUploadStatus(prev => {
+          const newStatus = { ...prev };
+          delete newStatus[`timeline.${index}.media.src`];
+          return newStatus;
+        });
+      }, 3000);
     }
   };
 
@@ -292,24 +330,20 @@ function AdminPanel() {
                     placeholder="Medya URL"
                     value={item.media?.src || ''}
                     onChange={e => {
-                      const newTimeline = [...timelineDraft];
-                      newTimeline[index] = {
-                        ...item,
-                        media: { ...item.media, src: e.target.value }
-                      };
-                      setTimelineDraft(newTimeline);
+                      setTimelineDraft(prev => {
+                        const newTimeline = [...prev];
+                        newTimeline[index] = {
+                          ...item,
+                          media: { ...(item.media || {}), src: e.target.value }
+                        };
+                        return newTimeline;
+                      });
                     }}
                   />
                   <input
                     type="file"
                     accept="image/*,video/*"
-                    onChange={async (e) => {
-                      await handleFileUpload(e, `timeline.${index}.media.src`);
-                      setTimeout(() => {
-                        const input = document.querySelector(`.admin-timeline-item:nth-child(${index + 1}) input[placeholder='Medya URL']`);
-                        if (input) input.focus();
-                      }, 100);
-                    }}
+                    onChange={e => handleTimelineFileUpload(e, index)}
                   />
                   {uploadStatus[`timeline.${index}.media.src`] && (
                     <div className={`upload-status ${uploadStatus[`timeline.${index}.media.src`].startsWith('Hata') ? 'upload-error' : ''}`}>
